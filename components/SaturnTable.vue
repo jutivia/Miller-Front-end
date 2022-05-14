@@ -512,13 +512,14 @@ td {
   color: #575757;
   /* white-space: nowrap; */
 }
-.table-row td:nth-child(1), .header-row th:nth-child(1){
-  width:100%;
+/* .table-row td:nth-child(2), .header-row th:nth-child(2){
+  width:auto;
+  min-width: 3rem;
   max-width:5rem;
   /* word-wrap: wrap; */
     /* overflow-wrap: break-word; */
     /* word-break: break-all; */
-}
+/* }
 /* Animations */
 .reveals {
   animation: reveals .3s ease-in-out;
@@ -580,7 +581,7 @@ td {
     min-width: auto;
   }
   th,td {
-    font-size: 13px;
+    font-size: 16px;
   }
   td {
     padding: 12px 10px;

@@ -2,11 +2,11 @@
   <div class="container">
     <div class="lhs">
       <h4 class="big_text">
-        My Publiation
+        {{ data.title || '-' }}
       </h4>
       <br>
       <p class="small_text">
-        We are also focused on supporting members of the DAO which would in return be of a good cause, to the DAO community at large. Support
+        {{ data.description || '-' }}
       </p>
       <div class="graph_container">
         <p>Location </p>
@@ -27,15 +27,19 @@
       </div>
       <div class="right_flex">
         <p class="small_text">
-          <img src="~assets/images/eye.png"> 234
+          <img src="~assets/images/eye.png"> 0
         </p>
         <p class="small_text">
-          $30
+          0.00 ℏ
         </p>
         <p class="small_text">
-          12/12/20
+          {{ data.date.split(':')[0].slice(0,10) || '-' }}
         </p>
       </div>
+      <br>
+      <a class="border_btn" target="_blank" :href="data.url" >
+            Download
+      </a>
       <div class="comments_container">
         <div class="comment_header">
           Comments
@@ -77,7 +81,28 @@
 
 <script>
 export default {
-
+  data () {
+    return {
+      data: {}
+    }
+  },
+  created () {
+    this.getSinlePublication()
+  },
+  methods: {
+    getSinlePublication () {
+      const publications = JSON.parse(localStorage.getItem('Publications'))
+      // console.log(publications)
+      publications.map((x) => {
+        console.log('beforefind:', x)
+        if (x.id.toString() === this.$route.query.id) {
+          console.log('afterfind:', x)
+          this.data = x
+        }
+        return x
+      })
+    }
+  }
 }
 </script>
 
@@ -138,9 +163,11 @@ padding:1.5rem;
     grid-template-columns: .1fr .8fr .1fr;
     margin-bottom: 2rem;
     align-items:center;
+    width:100%;
+    grid-gap:1rem;
 }
 .comment_body{
-    padding:2rem 1.5rem;
+    padding:1.5rem 1.5rem;
 }
 .color{
 width: 30px;
@@ -163,5 +190,17 @@ background: #50D37D;
 font-size: 20px;
 line-height: 24px;
 color: #575757;
+}
+.border_btn{
+border: 1px solid #000000;
+border-radius: 10px;
+width: 10rem;
+height: 3rem;
+background:none;
+cursor:pointer;
+padding:.5rem 2rem;
+color:#000000;
+text-decoration:none;
+margin-top:2rem;
 }
 </style>

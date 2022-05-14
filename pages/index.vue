@@ -8,7 +8,8 @@
           <span class="pink_text">RESOURCES</span>
           <br>
           <button class="btn margins">
-            Become a Creator
+           <span v-if="!connected"> Become a Creator </span>
+           <span v-else @click="$router.push('/creator-dashboard')"> View Your Publications </span>
           </button>
         </div>
         <div class="left_align">
@@ -91,7 +92,27 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return {
+      connected: this.$store.state.connected
+    }
+  },
+  computed: {
+    checkConnected () {
+      return this.$store.state.connected
+    }
+  },
+  watch: {
+    checkConnected () {
+      if (this.$store.state.connected === true) {
+        this.connected = true
+      } else {
+        this.connected = false
+      }
+    }
+  }
+}
 </script>
 
 <style scoped>
@@ -201,7 +222,7 @@ input[type='search']:focus {
   margin-bottom:2rem;
 }
 .main_grid img{
-  width: 770px;
+  width: 100%;
 height: 347px;
 border-radius: 9.37855px;
 }

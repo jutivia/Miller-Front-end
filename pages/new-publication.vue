@@ -24,6 +24,7 @@
                 accept=".pdf"
                 @change="selectFile"
                 @click="resetFile($event)"
+                :disabled="selectedFiles.length === 1"
               >
               <img src="~assets/images/pdf.png">
             </div>
@@ -36,11 +37,15 @@
                 accept=".xls"
                 @change="selectFile"
                 @click="resetFile($event)"
+                :disabled="selectedFiles.length === 1"
               >
               <img src="~assets/images/xls.png">
             </div>
           </div>
-          <p>Only Pdf and Xls files are supported</p>
+          <p v-if="selectedFiles[0]" class="only_file"> {{selectedFiles[0]? selectedFiles[0].name.slice(0, 25): ''}}
+           <button class="cancel" @click="selectedFiles.pop()" @click.stop>x</button>
+          </p>
+          <p v-else >Only Pdf and Xls files are supported</p>
         </div>
         <div class="rhs">
           <p>Select Category</p>
@@ -71,8 +76,9 @@
             </div>
           </div>
           <p>Note  please note that you would not get any incentive on free category</p>
-          <button class="btn submit">
-            Submit
+          <button class="btn submit" @click="main()" :disabled="!title || !description || !selectedFiles.length || !category">
+          <Loader v-if="loader" />
+            <span v-else> Submit </span>
           </button>
         </div>
       </div>
@@ -81,8 +87,80 @@
 </template>
 
 <script>
+// import { Web3Storage } from 'web3.storage'
+import { create } from 'ipfs-http-client'
+// import { HashConnect } from 'hashconnect'
+// import { ethers } from 'ethers'
+// import {
+//   Hbar,
+//   ContractFunctionParameters,
+//   ContractExecuteTransaction
+// } from '@hashgraph/sdk'
 export default {
+  data () {
+    return {
+      title: '',
+      description: '',
+      category: '',
+      selectedFiles: [],
+      loader: false
+    }
+  },
+  methods: {
+    resetFile (event) {
+      event.target.value = ''
+      // this.document1 = null
+    },
+    selectFile (event, index) {
+      // this.loading = true
+      const doc = event.target.files[0]
+      this.selectedFiles.push(doc)
+      console.log(doc)
+    },
+    async main () {
+      // const hashconnect = new HashConnect()
+      this.loader = true
+      // const provider = hashconnect.getProvider(
+      //   'testnet',
+      //   this.$store.state.walletDetails.topic,
+      //   '0.0.34750378'
+      // )
+      // // console.log(walletData[1])
+      // const signer = hashconnect.getSigner(provider)
+      // // const functionCall = encodeFunctionCall('upload', [this.category === 'Premium' ? 0 : 1])
+      // const contractExecTx = await new ContractExecuteTransaction()
+      //   .setContractId('0.0.34804013')
+      //   .setGas(3000000)
+      //   .setFunction('create', new ContractFunctionParameters()
+      //     .addString(this.category === 'Premium' ? 0 : 1))
+      //   .setPayableAmount(new Hbar(ethers.utils.parseUnits(0.0000000000000001, 8)))
+      //   .freezeWithSigner(signer)
+      // const res = await contractExecTx.executeWithSigner(signer)
+      // const resRx = await res.getReceipt(signer)
 
+      // console.log(`- Token association with Contract's account: ${resRx} \n`)
+      const client = create('https://ipfs.infura.io:5001/api/v0')
+      try {
+        const created = await client.add(this.selectedFiles[0])
+        const url = `https://ipfs.infura.io/ipfs/${created.path}`
+        console.log(url)
+        const dataToSave = {
+          title: this.title,
+          description: this.description,
+          date: new Date(),
+          id: Date.now(),
+          url
+        }
+        const arr = JSON.parse(localStorage.getItem('Publications')) || []
+        arr.push(dataToSave)
+        localStorage.setItem('Publications', JSON.stringify(arr))
+        this.$router.push('/creator-dashboard')
+      } catch (error) {
+        console.log(error.message)
+      }
+      this.loader = false
+    }
+  }
 }
 </script>
 
@@ -106,6 +184,8 @@ padding:1.5rem;
 font-weight: 500;
 font-size: 24px;
 margin-bottom: 2rem;
+font-family: 'Montserrat';
+/* color:grey; */
 }
 .upload_grid{
     display: grid;
@@ -121,6 +201,7 @@ border-radius: 5.89041px;
 padding:.5rem;
 width:auto;
 margin-right: 3rem;
+position:relative;
 }
 .lhs p, .rhs p{
     color: #575757;
@@ -179,8 +260,53 @@ color: #575757;
 .submit{
     width: 258px;
     height: 56px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
 }
 #file-upload {
+opacity:0;
+  width:100%;
+  height:100%;
+  position:absolute;
+  z-index:10;
+}
+#file-upload:disabled {
+  cursor: not-allowed;
+}
+.checkbox-container{
+  margin-top:.5rem;
+}
+.cancel {
+  margin-left: 8px;
+  /* height: 15px; */
+  /* width: 15px; */
+  /* border-radius: 50%; */
+  border: none;
+  background-color: transparent;
+  color: black;
+  /* display: flex; */
+  /* justify-content: center; */
+  /* align-items: center; */
+  font-size: 20px;
   display: none;
+  /* margin-bottom: -5rem; */
+}
+.cancel:hover {
+  background-color: none;
+  color: red;
+  border-color: red;
+}
+.only_file:hover .cancel{
+  display:inline-block;
+}
+.only_file{
+  display:flex;
+  align-items: center;
+}
+button:disabled{
+  cursor:not-allowed;
+  background-color:#364489;
 }
 </style>

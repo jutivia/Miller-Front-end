@@ -1,38 +1,147 @@
 <template>
   <header>
-    <div class="show-menu" @click="showMenu()">
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M12 6L22 16L12 26"
-          stroke="white"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </div>
-    <h3 class="title">
+    <h3 class="title" @click="$router.push('/')">
       Miller
     </h3>
     <!-- Message icon -->
-    <button class="btn margins">
+    <div v-if="!showDetails" >
+    <button class="btn margins" @click="connect">
       Connect wallet
     </button>
+    </div>
+    <div v-else class="upload">
+      <button class="btn margins" @click="$router.push('/new-publication')">
+       Upload Publication
+     </button>
+     <div>
+     <p class="p">Total Hbar </p>
+      <span class="s"><img src="~assets/images/eye.png"> {{ amount }}ℏ</span>
+      </div>
+      <div>
+      <p class="p"> Account ID</p>
+      <span class="s"> {{account}} </span>
+      </div>
+    </div>
   </header>
 </template>
 
 <script>
+import { HashConnect } from 'hashconnect'
+import { ethers } from 'ethers'
 export default {
   name: 'SaturnHeader',
+  data () {
+    return {
+      saveData: {
+        topic: '',
+        pairingString: '',
+        privateKey: '',
+        pairedWalletData: null,
+        pairedAccounts: [],
+        network: 'testnet'
+      },
+      localData: false,
+      showDetails: null,
+      account: '0.0.34750378',
+      amount: '30000'
+    }
+  },
+  computed: {
+    checkConnected () {
+      return this.showDetails
+    }
+  },
+  watch: {
+    checkConnected () {
+      this.$store.commit('checkConnected', this.showDetails)
+      if (this.showDetails === false) {
+        this.$router.push('/')
+      } else {
+        this.$router.push('/creator-dashboard')
+      }
+    }
+  },
+  created () {
+    this.showDetails = false
+    this.loadLocalData()
+  },
   methods: {
-    showMenu () {
-      this.$emit('showMenu')
+    async connect () {
+      const hashconnect = new HashConnect()
+      console.log('hashconnect:', hashconnect)
+      const appMetadata = {
+        name: 'Miller App',
+        description: 'An publication app',
+        icon: 'https://www.hashpack.app/img/logo.svg'
+      }
+
+      this.loadLocalData()
+      // console.log('localdata:', this.localData)
+      if (!this.localData) {
+        const initData = await hashconnect.init(appMetadata)
+        // console.log('initdata:', initData)
+        this.saveData.privateKey = initData.privKey
+
+        // then connect, storing the new topic for later
+        const state = await hashconnect.connect()
+        // console.log('state:', state)
+        this.saveData.topic = state.topic
+        // generate a pairing string, which you can display and generate a QR code from
+        this.saveData.pairingString = hashconnect.generatePairingString(state, 'testnet', true)
+        // find any supported local wallets
+        hashconnect.findLocalWallets()
+        hashconnect.foundExtensionEvent.once((walletMetadata) => {
+          hashconnect.connectToLocalWallet(this.saveData.pairingString, walletMetadata)
+        })
+        // console.log('saveData1:', this.saveData)
+        hashconnect.pairingEvent.once(async (pairingData) => {
+          // console.log('pairingData:', pairingData)
+          pairingData.accountIds = this.saveData.pairedAccounts
+          console.log('saveData2:', this.saveData)
+          await this.getAccountBalance()
+          this.$store.commit('setWalletDetails', this.saveData)
+          this.saveDataInLocalStorage()
+          this.showDetails = true
+        })
+      } else {
+        await hashconnect.init(appMetadata, this.saveData.privateKey)
+        // await hashconnect.connect(this.saveData.topic, this.saveData.pairedWalletData)
+        hashconnect.findLocalWallets()
+        hashconnect.foundExtensionEvent.once(async (walletMetadata) => {
+          await hashconnect.connectToLocalWallet(this.saveData.pairingString, walletMetadata)
+          await this.getAccountBalance()
+          this.showDetails = true
+          this.$store.commit('setWalletDetails', this.saveData)
+        })
+      }
+      console.log('done pairing')
+      // const provider = await hashconnect.getProvider(this.saveData.network, this.saveData.topic, this.saveData.pairedAccounts[this.saveData.pairedAccounts.length - 1])
+      // const balance = await provider.getAccountBalance(this.saveData.pairedAccounts[this.saveData.pairedAccounts.length - 1])
+      // console.log('balance', balance)
+    },
+    loadLocalData () {
+      // const foundData = localStorage.getItem('hashconnectData')
+      // console.log('foundata:', foundData)
+      // if (foundData) {
+      //   this.saveData = JSON.parse(foundData)
+      //   console.log(this.saveData)
+      //   this.localData = true
+      // } else {
+      //   this.localData = false
+      // }
+      this.localData = false
+    },
+    saveDataInLocalStorage () {
+      const dataToSave = JSON.stringify(this.saveData)
+      localStorage.setItem('hashconnectData', dataToSave)
+    },
+    async getAccountBalance () {
+      const hashconnect = new HashConnect()
+      const provider = await hashconnect.getProvider(this.saveData.network, this.saveData.topic, '0.0.34750378')
+      const balance = await provider.getAccountBalance('0.0.34750378')
+      console.log('balance', balance.hbars._valueInTinybar.c[0])
+      const big = balance.hbars._valueInTinybar.c[0].toString()
+      this.amount = ethers.utils.formatUnits(big, 8)
     }
   }
 }
@@ -68,11 +177,31 @@ header {
   line-height: 1.125rem;
   color:#cf6dbb;
   margin-left:2rem;
+  cursor:pointer;
 }
 
 .margins{
    width: 246px;
 height: 56px;
 margin-right:2.5rem;
+}
+.upload{
+  margin-right:2.5rem;
+  width:auto;
+  min-width:40rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.p{
+  font-style: normal;
+font-weight: 600;
+font-size: 20px;
+color: #07124C;
+}
+.s{
+  font-weight: 500;
+font-size: 16px;
+color: #575757;
 }
 </style>
