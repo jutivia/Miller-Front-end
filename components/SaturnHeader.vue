@@ -87,7 +87,7 @@ export default {
         // console.log('state:', state)
         this.saveData.topic = state.topic
         // generate a pairing string, which you can display and generate a QR code from
-        this.saveData.pairingString = hashconnect.generatePairingString(state, 'testnet', true)
+        this.saveData.pairingString = hashconnect.generatePairingString(state, 'testnet', false)
         // find any supported local wallets
         hashconnect.findLocalWallets()
         hashconnect.foundExtensionEvent.once((walletMetadata) => {
@@ -95,8 +95,8 @@ export default {
         })
         // console.log('saveData1:', this.saveData)
         hashconnect.pairingEvent.once(async (pairingData) => {
-          // console.log('pairingData:', pairingData)
-          pairingData.accountIds = this.saveData.pairedAccounts
+          console.log('pairingData:', pairingData)
+          this.saveData.pairedAccounts = pairingData.accountIds
           console.log('saveData2:', this.saveData)
           await this.getAccountBalance()
           this.$store.commit('setWalletDetails', this.saveData)
@@ -137,9 +137,10 @@ export default {
     },
     async getAccountBalance () {
       const hashconnect = new HashConnect()
-      const provider = await hashconnect.getProvider(this.saveData.network, this.saveData.topic, '0.0.34750378')
-      const balance = await provider.getAccountBalance('0.0.34750378')
-      console.log('balance', balance.hbars._valueInTinybar.c[0])
+      const provider = await hashconnect.getProvider(this.saveData.network, this.saveData.topic, this.saveData.pairedAccounts[0])
+      // const accountId = hashconnect.getAccountId(this.saveData.privateKey)
+      const balance = await provider.getAccountBalance(this.saveData.pairedAccounts[0])
+      // console.log('accountId', accountId)
       const big = balance.hbars._valueInTinybar.c[0].toString()
       this.amount = ethers.utils.formatUnits(big, 8)
     }

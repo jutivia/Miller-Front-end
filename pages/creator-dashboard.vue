@@ -1,6 +1,6 @@
 <template>
   <div class="table">
-  <h1> Creator's Dashboard </h1>
+  <h1> My Dashboard </h1>
     <SaturnTable
       v-if ="!empty"
       :data="tableData"
