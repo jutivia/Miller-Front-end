@@ -10,7 +10,7 @@
       </p>
       <div class="graph_container">
         <p>Location </p>
-        <img src="~assets/images/map.png">
+        <img src="~assets/images/map.svg">
       </div>
     </div>
     <div class="rhs">
