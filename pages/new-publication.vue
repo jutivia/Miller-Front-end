@@ -115,7 +115,7 @@ export default {
       // this.loading = true
       const doc = event.target.files[0]
       this.selectedFiles.push(doc)
-      console.log(doc)
+      // console.log(doc)
     },
     async main () {
       // const hashconnect = new HashConnect()
@@ -143,7 +143,7 @@ export default {
       try {
         const created = await client.add(this.selectedFiles[0])
         const url = `https://ipfs.infura.io/ipfs/${created.path}`
-        console.log(url)
+        // console.log(url)
         const dataToSave = {
           title: this.title,
           description: this.description,
@@ -156,7 +156,7 @@ export default {
         localStorage.setItem('Publications', JSON.stringify(arr))
         this.$router.push('/creator-dashboard')
       } catch (error) {
-        console.log(error.message)
+        // console.log(error.message)
       }
       this.loader = false
     }

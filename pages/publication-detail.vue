@@ -94,9 +94,9 @@ export default {
       const publications = JSON.parse(localStorage.getItem('Publications'))
       // console.log(publications)
       publications.map((x) => {
-        console.log('beforefind:', x)
+        // console.log('beforefind:', x)
         if (x.id.toString() === this.$route.query.id) {
-          console.log('afterfind:', x)
+          // console.log('afterfind:', x)
           this.data = x
         }
         return x

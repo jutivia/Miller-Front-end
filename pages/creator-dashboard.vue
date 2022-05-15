@@ -57,7 +57,7 @@ export default {
   methods: {
     getPublications () {
       this.tableData.labels = JSON.parse(localStorage.getItem('Publications')) || []
-      console.log('tabbe1:', this.tableData.labels)
+      // console.log('tabbe1:', this.tableData.labels)
       if (!this.tableData.labels.length) {
         this.empty = true
       } else {
@@ -66,7 +66,7 @@ export default {
           x.earning = '0.00 ℏ'
           return x
         })
-        console.log(this.tableData.labels)
+        // console.log(this.tableData.labels)
       }
     },
     rowSelected (label) {

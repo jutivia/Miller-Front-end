@@ -42,8 +42,8 @@ export default {
       },
       localData: false,
       showDetails: null,
-      account: '0.0.34750378',
-      amount: '30000'
+      account: '0.0.0',
+      amount: '00.00'
     }
   },
   computed: {
@@ -63,12 +63,12 @@ export default {
   },
   created () {
     this.showDetails = false
-    this.loadLocalData()
+    // this.loadLocalData()
   },
   methods: {
     async connect () {
       const hashconnect = new HashConnect()
-      console.log('hashconnect:', hashconnect)
+      // console.log('hashconnect:', hashconnect)
       const appMetadata = {
         name: 'Miller App',
         description: 'An publication app',
@@ -95,9 +95,9 @@ export default {
         })
         // console.log('saveData1:', this.saveData)
         hashconnect.pairingEvent.once(async (pairingData) => {
-          console.log('pairingData:', pairingData)
+          // console.log('pairingData:', pairingData)
           this.saveData.pairedAccounts = pairingData.accountIds
-          console.log('saveData2:', this.saveData)
+          // console.log('saveData2:', this.saveData)
           await this.getAccountBalance()
           this.$store.commit('setWalletDetails', this.saveData)
           this.saveDataInLocalStorage()
@@ -105,35 +105,28 @@ export default {
         })
       } else {
         await hashconnect.init(appMetadata, this.saveData.privateKey)
-        // await hashconnect.connect(this.saveData.topic, this.saveData.pairedWalletData)
-        hashconnect.findLocalWallets()
-        hashconnect.foundExtensionEvent.once(async (walletMetadata) => {
-          await hashconnect.connectToLocalWallet(this.saveData.pairingString, walletMetadata)
-          await this.getAccountBalance()
-          this.showDetails = true
-          this.$store.commit('setWalletDetails', this.saveData)
-        })
+        await hashconnect.connect(this.saveData.topic, this.saveData.pairedWalletData)
+        await this.getAccountBalance()
+        this.showDetails = true
+        this.$store.commit('setWalletDetails', this.saveData)
       }
-      console.log('done pairing')
-      // const provider = await hashconnect.getProvider(this.saveData.network, this.saveData.topic, this.saveData.pairedAccounts[this.saveData.pairedAccounts.length - 1])
-      // const balance = await provider.getAccountBalance(this.saveData.pairedAccounts[this.saveData.pairedAccounts.length - 1])
-      // console.log('balance', balance)
+      // console.log('done pairing')
     },
     loadLocalData () {
-      // const foundData = localStorage.getItem('hashconnectData')
+      const foundData = localStorage.getItem('connectedData')
       // console.log('foundata:', foundData)
-      // if (foundData) {
-      //   this.saveData = JSON.parse(foundData)
-      //   console.log(this.saveData)
-      //   this.localData = true
-      // } else {
-      //   this.localData = false
-      // }
-      this.localData = false
+      if (foundData) {
+        this.saveData = JSON.parse(foundData)
+        // console.log(this.saveData)
+        this.localData = true
+      } else {
+        this.localData = false
+      }
+      // this.localData = false
     },
     saveDataInLocalStorage () {
       const dataToSave = JSON.stringify(this.saveData)
-      localStorage.setItem('hashconnectData', dataToSave)
+      localStorage.setItem('connectedData', dataToSave)
     },
     async getAccountBalance () {
       const hashconnect = new HashConnect()
@@ -143,6 +136,7 @@ export default {
       // console.log('accountId', accountId)
       const big = balance.hbars._valueInTinybar.c[0].toString()
       this.amount = ethers.utils.formatUnits(big, 8)
+      this.account = this.saveData.pairedAccounts[0]
     }
   }
 }
