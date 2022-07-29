@@ -37,8 +37,8 @@
         </p>
       </div>
       <br>
-      <a class="border_btn" target="_blank" :href="data.url" >
-            Download
+      <a class="border_btn" target="_blank" :href="data.url">
+        Download
       </a>
       <div class="comments_container">
         <div class="comment_header">

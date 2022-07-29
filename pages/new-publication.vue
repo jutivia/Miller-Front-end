@@ -22,9 +22,9 @@
                 name="file"
                 required
                 accept=".pdf"
+                :disabled="selectedFiles.length === 1"
                 @change="selectFile"
                 @click="resetFile($event)"
-                :disabled="selectedFiles.length === 1"
               >
               <img src="~assets/images/pdf.png">
             </div>
@@ -35,17 +35,22 @@
                 name="file"
                 required
                 accept=".xls"
+                :disabled="selectedFiles.length === 1"
                 @change="selectFile"
                 @click="resetFile($event)"
-                :disabled="selectedFiles.length === 1"
               >
               <img src="~assets/images/xls.png">
             </div>
           </div>
-          <p v-if="selectedFiles[0]" class="only_file"> {{selectedFiles[0]? selectedFiles[0].name.slice(0, 25): ''}}
-           <button class="cancel" @click="selectedFiles.pop()" @click.stop>x</button>
+          <p v-if="selectedFiles[0]" class="only_file">
+            {{ selectedFiles[0]? selectedFiles[0].name.slice(0, 25): '' }}
+            <button class="cancel" @click="selectedFiles.pop()" @click.stop>
+              x
+            </button>
           </p>
-          <p v-else >Only Pdf and Xls files are supported</p>
+          <p v-else>
+            Only Pdf and Xls files are supported
+          </p>
         </div>
         <div class="rhs">
           <p>Select Category</p>
@@ -76,8 +81,8 @@
             </div>
           </div>
           <p>Note  please note that you would not get any incentive on free category</p>
-          <button class="btn submit" @click="main()" :disabled="!title || !description || !selectedFiles.length || !category">
-          <Loader v-if="loader" />
+          <button class="btn submit" :disabled="!title || !description || !selectedFiles.length || !category" @click="main()">
+            <Loader v-if="loader" />
             <span v-else> Submit </span>
           </button>
         </div>

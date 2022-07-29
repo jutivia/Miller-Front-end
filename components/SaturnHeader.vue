@@ -4,52 +4,60 @@
       Miller
     </h3>
     <!-- Message icon -->
-    <div v-if="!showDetails" >
-    <button class="btn margins" @click="connect">
-      Connect wallet
-    </button>
+    <div v-if="!showDetails">
+      <button class="btn margins" @click="connect">
+        Connect wallet
+      </button>
     </div>
     <div v-else class="upload">
       <button class="btn margins" @click="$router.push('/new-publication')">
-       Upload Publication
-     </button>
-     <div>
-     <p class="p">Total Hbar </p>
-      <span class="s"><img src="~assets/images/eye.png"> {{ amount }}ℏ</span>
+        Upload Publication
+      </button>
+      <div>
+        <p class="p">
+          Total Matic
+        </p>
+        <span class="s"><img src="~assets/images/eye.png"> {{ amount }} MATIC</span>
       </div>
       <div>
-      <p class="p"> Account ID</p>
-      <span class="s"> {{account}} </span>
+        <p class="p">
+          Account ID
+        </p>
+        <span class="s"> {{ account }} </span>
       </div>
     </div>
   </header>
 </template>
 
 <script>
-import { HashConnect } from 'hashconnect'
+import Web3Modal from 'web3modal'
+import CoinbaseWalletSDK from '@coinbase/wallet-sdk'
+import WalletConnect from '@walletconnect/web3-provider'
 import { ethers } from 'ethers'
 export default {
   name: 'SaturnHeader',
   data () {
     return {
-      saveData: {
-        topic: '',
-        pairingString: '',
-        privateKey: '',
-        pairedWalletData: null,
-        pairedAccounts: [],
-        network: 'testnet'
-      },
       localData: false,
       showDetails: null,
       account: '0.0.0',
-      amount: '00.00'
+      amount: '00.00',
+      chainId: 8001,
+      provider: null,
+      chainIsChanged: false
     }
   },
   computed: {
     checkConnected () {
       return this.showDetails
     }
+    // checkNetworkChange () {
+    //   // const provider = new ethers.providers.Web3Provider(window.ethereum)
+    //   this.provider?.on('chainChanged', () => {
+    //     console.log(this.provider?._network?.chainId)
+    //   })
+    //   return this.provider?._network?.chainId
+    // }
   },
   watch: {
     checkConnected () {
@@ -60,6 +68,26 @@ export default {
         this.$router.push('/creator-dashboard')
       }
     }
+    // async checkNetworkChange () {
+    //   const network = await this.provider.getNetwork()
+    //   this.chainId = network.chainId
+    //   if (this.chainId === 80001) {
+    //     const accounts = await this.provider.listAccounts()
+    //     this.account = this.cutAddr(accounts[0])
+    //     this.provider.getBalance(accounts[0]).then((balance) => {
+    //       const balanceInEth = ethers.utils.formatEther(balance).toString()
+    //       const deci = balanceInEth.split('.')
+    //       const end = deci[1].slice(0, 3)
+    //       this.amount = deci[0].concat('.').concat(end)
+    //     })
+    //     this.showDetails = true
+    //   } else {
+    //     this.showDetails = false
+    //     this.$toasted.error("You're on  a wrong network. kindly switch to the Polygon Mumbai Testnet").goAway(3500)
+    //   }
+    //   this.chainIsChanged = false
+    //   return this.chainIsChanged
+    // }
   },
   created () {
     this.showDetails = false
@@ -67,54 +95,55 @@ export default {
   },
   methods: {
     async connect () {
-      const hashconnect = new HashConnect()
-      // console.log('hashconnect:', hashconnect)
-      const appMetadata = {
-        name: 'Miller App',
-        description: 'An publication app',
-        icon: 'https://www.hashpack.app/img/logo.svg'
+      const providerOptions = {
+        coinbasewallet: {
+          package: CoinbaseWalletSDK,
+          options: {
+            appName: 'Miller',
+            infuraId: process.env.INFURA_KEY
+          }
+        },
+        walletconnect: {
+          package: WalletConnect,
+          options: {
+            infuraId: process.env.INFURA_KEY
+          }
+        }
       }
 
-      this.loadLocalData()
-      // console.log('localdata:', this.localData)
-      if (!this.localData) {
-        const initData = await hashconnect.init(appMetadata)
-        // console.log('initdata:', initData)
-        this.saveData.privateKey = initData.privKey
+      const web3Modal = new Web3Modal({
+        network: 'matic',
+        cacheProvider: true, // optional
+        providerOptions // required
+      })
 
-        // then connect, storing the new topic for later
-        const state = await hashconnect.connect()
-        // console.log('state:', state)
-        this.saveData.topic = state.topic
-        // generate a pairing string, which you can display and generate a QR code from
-        this.saveData.pairingString = hashconnect.generatePairingString(state, 'testnet', false)
-        // find any supported local wallets
-        hashconnect.findLocalWallets()
-        hashconnect.foundExtensionEvent.once((walletMetadata) => {
-          hashconnect.connectToLocalWallet(this.saveData.pairingString, walletMetadata)
-        })
-        // console.log('saveData1:', this.saveData)
-        hashconnect.pairingEvent.once(async (pairingData) => {
-          // console.log('pairingData:', pairingData)
-          this.saveData.pairedAccounts = pairingData.accountIds
-          // console.log('saveData2:', this.saveData)
-          await this.getAccountBalance()
-          this.$store.commit('setWalletDetails', this.saveData)
-          this.saveDataInLocalStorage()
+      const instance = await web3Modal.connect()
+      this.provider = new ethers.providers.Web3Provider(instance)
+      if (this.provider) {
+        const accounts = await this.provider.listAccounts()
+        const network = await this.provider.getNetwork()
+        this.chainId = network.chainId
+        if (this.chainId === 80001) {
+          this.account = this.cutAddr(accounts[0])
+          this.provider.getBalance(accounts[0]).then((balance) => {
+            const balanceInEth = ethers.utils.formatEther(balance).toString()
+            const deci = balanceInEth.split('.')
+            const end = deci[1].slice(0, 3)
+            this.amount = deci[0].concat('.').concat(end)
+          })
           this.showDetails = true
-        })
+        } else {
+          this.showDetails = false
+          this.$toasted.error("You're on  a wrong network. kindly switch to the Polygon Mumbai Testnet").goAway(3500)
+        }
       } else {
-        await hashconnect.init(appMetadata, this.saveData.privateKey)
-        await hashconnect.connect(this.saveData.topic, this.saveData.pairedWalletData)
-        await this.getAccountBalance()
-        this.showDetails = true
-        this.$store.commit('setWalletDetails', this.saveData)
+        this.$toasted.error('No wallet connection available on your device').goAway(3500)
       }
-      // console.log('done pairing')
+
+      this.$store.commit('checkConnected', this.showDetails)
     },
     loadLocalData () {
       const foundData = localStorage.getItem('connectedData')
-      // console.log('foundata:', foundData)
       if (foundData) {
         this.saveData = JSON.parse(foundData)
         // console.log(this.saveData)
@@ -122,21 +151,15 @@ export default {
       } else {
         this.localData = false
       }
-      // this.localData = false
     },
     saveDataInLocalStorage () {
       const dataToSave = JSON.stringify(this.saveData)
       localStorage.setItem('connectedData', dataToSave)
     },
-    async getAccountBalance () {
-      const hashconnect = new HashConnect()
-      const provider = await hashconnect.getProvider(this.saveData.network, this.saveData.topic, this.saveData.pairedAccounts[0])
-      // const accountId = hashconnect.getAccountId(this.saveData.privateKey)
-      const balance = await provider.getAccountBalance(this.saveData.pairedAccounts[0])
-      // console.log('accountId', accountId)
-      const big = balance.hbars._valueInTinybar.c[0].toString()
-      this.amount = ethers.utils.formatUnits(big, 8)
-      this.account = this.saveData.pairedAccounts[0]
+    cutAddr (addr) {
+      const starter = addr.slice(0, 4)
+      const end = addr.slice(addr.length - 4)
+      return `${starter}...${end}`
     }
   }
 }

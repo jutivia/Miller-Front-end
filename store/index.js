@@ -2,7 +2,8 @@
 // import Miller from '../utils/miller.json'
 export const state = () => ({
   walletDetails: null,
-  connected: null
+  connected: null,
+  provider: null
 })
 
 export const mutations = {
@@ -11,6 +12,9 @@ export const mutations = {
   },
   checkConnected (state, bool) {
     state.connected = bool
+  },
+  setProvider (state, details) {
+    state.provider = details
   }
 }
 export const actions = {

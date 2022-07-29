@@ -8,8 +8,8 @@
           <span class="pink_text">RESOURCES</span>
           <br>
           <button class="btn margins">
-           <span v-if="!connected"> Become a Creator </span>
-           <span v-else @click="$router.push('/creator-dashboard')"> View Your Publications </span>
+            <span v-if="!connected"> Become a Creator </span>
+            <span v-else @click="$router.push('/creator-dashboard')"> View Your Publications </span>
           </button>
         </div>
         <div class="left_align">
@@ -81,12 +81,12 @@
       </div>
     </div>
     <footer>
-     <p>
-       About us  News  Careers  Help  Center
-     </p>
-     <p>
-       Copyright 2022
-     </p>
+      <p>
+        About us  News  Careers  Help  Center
+      </p>
+      <p>
+        Copyright 2022
+      </p>
     </footer>
   </div>
 </template>
