@@ -22,7 +22,7 @@ export default {
           { key: 'description', label: 'My Publications', type: 'string' },
           { key: 'views', label: 'Views', type: 'string' },
           { key: 'earning', label: 'Earnings', type: 'string' },
-          { key: 'date', label: 'Data Uploaded', type: 'date/time' }
+          { key: 'date', label: 'Date Uploaded', type: 'date/time' }
         ],
         labels: [
           // {
@@ -63,7 +63,7 @@ export default {
       } else {
         this.tableData.labels.map((x) => {
           x.views = '0'
-          x.earning = '0.00 ℏ'
+          x.earning = '0.00 Matic'
           return x
         })
         // console.log(this.tableData.labels)

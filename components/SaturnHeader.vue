@@ -32,8 +32,9 @@
 <script>
 import Web3Modal from 'web3modal'
 import CoinbaseWalletSDK from '@coinbase/wallet-sdk'
-import WalletConnect from '@walletconnect/web3-provider'
+import WalletConnectProvider from '@walletconnect/web3-provider'
 import { ethers } from 'ethers'
+import MetaMaskLogo from '~/assets/metamask.svg'
 export default {
   name: 'SaturnHeader',
   data () {
@@ -50,14 +51,14 @@ export default {
   computed: {
     checkConnected () {
       return this.showDetails
+    },
+    checkNetworkChange () {
+      this.provider?.on('chainChanged', (chainId) => {
+        this.chainId = chainId
+        return this.chainId
+      })
+      return this.chainId
     }
-    // checkNetworkChange () {
-    //   // const provider = new ethers.providers.Web3Provider(window.ethereum)
-    //   this.provider?.on('chainChanged', () => {
-    //     console.log(this.provider?._network?.chainId)
-    //   })
-    //   return this.provider?._network?.chainId
-    // }
   },
   watch: {
     checkConnected () {
@@ -67,27 +68,24 @@ export default {
       } else {
         this.$router.push('/creator-dashboard')
       }
+    },
+    async checkNetworkChange () {
+      if (this.chainId === 80001) {
+        const accounts = await this.provider.listAccounts()
+        this.account = this.cutAddr(accounts[0])
+        this.provider.getBalance(accounts[0]).then((balance) => {
+          const balanceInEth = ethers.utils.formatEther(balance).toString()
+          const deci = balanceInEth.split('.')
+          const end = deci[1].slice(0, 3)
+          this.amount = deci[0].concat('.').concat(end)
+        })
+        this.showDetails = true
+      } else {
+        this.showDetails = false
+        this.$toasted.error("You're on  a wrong network. kindly switch to the Polygon Mumbai Testnet").goAway(3500)
+      }
+      return this.chainIsChanged
     }
-    // async checkNetworkChange () {
-    //   const network = await this.provider.getNetwork()
-    //   this.chainId = network.chainId
-    //   if (this.chainId === 80001) {
-    //     const accounts = await this.provider.listAccounts()
-    //     this.account = this.cutAddr(accounts[0])
-    //     this.provider.getBalance(accounts[0]).then((balance) => {
-    //       const balanceInEth = ethers.utils.formatEther(balance).toString()
-    //       const deci = balanceInEth.split('.')
-    //       const end = deci[1].slice(0, 3)
-    //       this.amount = deci[0].concat('.').concat(end)
-    //     })
-    //     this.showDetails = true
-    //   } else {
-    //     this.showDetails = false
-    //     this.$toasted.error("You're on  a wrong network. kindly switch to the Polygon Mumbai Testnet").goAway(3500)
-    //   }
-    //   this.chainIsChanged = false
-    //   return this.chainIsChanged
-    // }
   },
   created () {
     this.showDetails = false
@@ -96,46 +94,67 @@ export default {
   methods: {
     async connect () {
       const providerOptions = {
+        injected: {
+          display: {
+            logo: MetaMaskLogo,
+            type: 'injected',
+            check: 'isMetaMask',
+            description: 'Connect to your MetaMask Wallet'
+          },
+          package: true
+        },
+        walletconnect: {
+          package: WalletConnectProvider,
+          options: {
+            alchemyId: process.env.VUE_APP_ALCHEMY_KEY,
+            rpc: {
+              80001: process.env.VUE_APP_MUMBAI_RPC_URL
+            }
+          },
+          qrcode: true,
+          qrcodeModalOptions: {
+            mobileLinks: [
+              'metamask',
+              'trust',
+              'rainbow',
+              'argent',
+              'imtoken',
+              'pillar'
+            ]
+          }
+        },
+        //* **Coinbase Wallet***//
         coinbasewallet: {
           package: CoinbaseWalletSDK,
           options: {
             appName: 'Miller',
-            infuraId: process.env.INFURA_KEY
-          }
-        },
-        walletconnect: {
-          package: WalletConnect,
-          options: {
-            infuraId: process.env.INFURA_KEY
+            alchemyId: process.env.VUE_APP_ALCHEMY_KEY,
+            rpc: process.env.VUE_APP_MUMBAI_RPC_URL,
+            chainId: 80001,
+            darkMode: true
           }
         }
       }
 
-      const web3Modal = new Web3Modal({
+      const newWeb3Modal = new Web3Modal({
+        disableInjectedProvider: false,
+        displayNoInjectedProvider: false,
+        theme: {
+          background: 'rgb(20,30,30, 0.65)',
+          main: 'rgb(199, 199, 199)',
+          secondary: 'rgb(136, 136, 136)',
+          border: 'rgba(40, 240, 5, 0.05)',
+          hover: 'rgb(16, 45, 35, 0.9)'
+        },
         network: 'matic',
         cacheProvider: true, // optional
         providerOptions // required
       })
-
-      const instance = await web3Modal.connect()
+      const instance = await newWeb3Modal.connect()
       this.provider = new ethers.providers.Web3Provider(instance)
       if (this.provider) {
-        const accounts = await this.provider.listAccounts()
-        const network = await this.provider.getNetwork()
-        this.chainId = network.chainId
-        if (this.chainId === 80001) {
-          this.account = this.cutAddr(accounts[0])
-          this.provider.getBalance(accounts[0]).then((balance) => {
-            const balanceInEth = ethers.utils.formatEther(balance).toString()
-            const deci = balanceInEth.split('.')
-            const end = deci[1].slice(0, 3)
-            this.amount = deci[0].concat('.').concat(end)
-          })
-          this.showDetails = true
-        } else {
-          this.showDetails = false
-          this.$toasted.error("You're on  a wrong network. kindly switch to the Polygon Mumbai Testnet").goAway(3500)
-        }
+        this.getAccountdetails()
+        localStorage.setItem('Provider', this.provider)
       } else {
         this.$toasted.error('No wallet connection available on your device').goAway(3500)
       }
@@ -160,6 +179,24 @@ export default {
       const starter = addr.slice(0, 4)
       const end = addr.slice(addr.length - 4)
       return `${starter}...${end}`
+    },
+    async getAccountdetails () {
+      const accounts = await this.provider.listAccounts()
+      const network = await this.provider.getNetwork()
+      this.chainId = network.chainId
+      if (this.chainId === 80001) {
+        this.account = this.cutAddr(accounts[0])
+        this.provider.getBalance(accounts[0]).then((balance) => {
+          const balanceInEth = ethers.utils.formatEther(balance).toString()
+          const deci = balanceInEth.split('.')
+          const end = deci[1].slice(0, 3)
+          this.amount = deci[0].concat('.').concat(end)
+        })
+        this.showDetails = true
+      } else {
+        this.showDetails = false
+        this.$toasted.error("You're on  a wrong network. kindly switch to the Polygon Mumbai Testnet").goAway(3500)
+      }
     }
   }
 }
