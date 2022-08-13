@@ -1,16 +1,17 @@
 <template>
   <div class="table">
-  <h1> My Dashboard </h1>
+    <h1> My Dashboard </h1>
     <SaturnTable
-      v-if ="!empty"
+      v-if="!empty"
       :data="tableData"
       @action="rowSelected"
     />
-    <EmptyState v-else page="dashboard"/>
+    <EmptyState v-else page="dashboard" />
   </div>
 </template>
 
 <script>
+import functions from '~/utils/functions'
 export default {
   data () {
     return {
@@ -22,7 +23,7 @@ export default {
           { key: 'description', label: 'My Publications', type: 'string' },
           { key: 'views', label: 'Views', type: 'string' },
           { key: 'earning', label: 'Earnings', type: 'string' },
-          { key: 'date', label: 'Date Uploaded', type: 'date/time' }
+          { key: 'createdAt', label: 'Date Uploaded', type: 'date/time' }
         ],
         labels: [
           // {
@@ -55,24 +56,41 @@ export default {
     this.getPublications()
   },
   methods: {
-    getPublications () {
-      this.tableData.labels = JSON.parse(localStorage.getItem('Publications')) || []
-      // console.log('tabbe1:', this.tableData.labels)
-      if (!this.tableData.labels.length) {
-        this.empty = true
-      } else {
-        this.tableData.labels.map((x) => {
-          x.views = '0'
-          x.earning = '0.00 Matic'
-          return x
-        })
-        // console.log(this.tableData.labels)
+    capitalize: functions.capitalize,
+    async getPublications () {
+      try {
+        const { data } = await this.$axios.get('/api/v1/publications/user')
+        // console.log(data)
+        this.tableData.labels = data.publications
+        // console.log('tabbe1:', this.tableData.labels)
+        if (!this.tableData.labels.length) {
+          this.empty = true
+        } else {
+          this.tableData.labels.map((x) => {
+            x.title = this.capitalize(x.title)
+            x.description = this.capitalize(x.description.slice(0, 20))
+            x.earning = '0.00 Matic'
+            return x
+          })
+          // console.log(this.tableData.labels)
+        }
+      } catch (err) {
+        if (
+          err.message.includes(
+            "Cannot read properties of null (reading 'toLowerCase')"
+          ) ||
+            err.message.includes('Network')
+        ) {
+          this.$toasted.error('Check your connection.').goAway(5000)
+        } else {
+          this.$toasted.error(err?.response?.data?.msg).goAway(5000)
+        }
       }
     },
     rowSelected (label) {
       this.$router.push({
         path: '/publication-detail',
-        query: { id: label.id }
+        query: { id: label._id }
       })
     }
   }

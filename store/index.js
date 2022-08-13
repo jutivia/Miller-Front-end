@@ -3,10 +3,16 @@
 export const state = () => ({
   walletDetails: null,
   connected: null,
-  provider: null
+  provider: null,
+  token: null,
+  userId: null,
+  userAddress: null
 })
 
 export const mutations = {
+  setToken (state, token) {
+    state.token = token
+  },
   setWalletDetails (state, account) {
     state.walletDetails = account
   },
@@ -15,6 +21,12 @@ export const mutations = {
   },
   setProvider (state, details) {
     state.provider = details
+  },
+  setUserId (state, details) {
+    state.userId = details
+  },
+  setUserAddress (state, details) {
+    state.userAddress = details
   }
 }
 export const actions = {

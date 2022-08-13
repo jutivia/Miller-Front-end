@@ -2,11 +2,11 @@
   <div class="container">
     <div class="lhs">
       <h4 class="big_text">
-        {{ data.title || '-' }}
+        {{ capitalize(data.title) || '-' }}
       </h4>
       <br>
       <p class="small_text">
-        {{ data.description || '-' }}
+        {{ capitalize(data.description) || '-' }}
       </p>
       <div class="graph_container">
         <p>Location </p>
@@ -27,19 +27,25 @@
       </div>
       <div class="right_flex">
         <p class="small_text">
-          <img src="~assets/images/eye.png"> 0
+          <img src="~assets/images/eye.png"> {{ data.views }}
         </p>
         <p class="small_text">
           0.00 ℏ
         </p>
         <p class="small_text">
-          {{ data.date.split(':')[0].slice(0,10) || '-' }}
+          {{ fullDate( data.createdAt) }}
         </p>
       </div>
       <br>
-      <a class="border_btn" target="_blank" :href="data.url">
-        Download
-      </a>
+      <div class="border_btn_flex">
+        <a class="border_btn" target="_blank" :href="data.cid">
+          Download
+        </a>
+        <div v-if="$store.state.userId === data.createdBy" class="border_btn delete" @click="deletePublication()">
+          <span v-if="!loader1"> Delete </span>
+          <Loader v-if="loader1" />
+        </div>
+      </div>
       <div class="comments_container">
         <div class="comment_header">
           Comments
@@ -80,27 +86,57 @@
 </template>
 
 <script>
+import functions from '~/utils/functions'
 export default {
   data () {
     return {
-      data: {}
+      data: {
+      },
+      loader1: false
     }
   },
   created () {
     this.getSinlePublication()
   },
   methods: {
-    getSinlePublication () {
-      const publications = JSON.parse(localStorage.getItem('Publications'))
-      // console.log(publications)
-      publications.map((x) => {
-        // console.log('beforefind:', x)
-        if (x.id.toString() === this.$route.query.id) {
-          // console.log('afterfind:', x)
-          this.data = x
+    fullDate: functions.fullDate,
+    capitalize: functions.capitalize,
+    async getSinlePublication () {
+      try {
+        const data = await this.$axios.get(`/api/v1/publications/${this.$route.query.id}`)
+        this.data = data.data.updatedCount
+      } catch (err) {
+        if (
+          err.message.includes(
+            "Cannot read properties of null (reading 'toLowerCase')"
+          ) ||
+            err.message.includes('Network')
+        ) {
+          this.$toasted.error('Check your connection.').goAway(5000)
+        } else {
+          this.$toasted.error(err?.response?.data?.msg).goAway(5000)
         }
-        return x
-      })
+      }
+    },
+    async deletePublication () {
+      this.loader1 = true
+      try {
+        await this.$axios.delete(`/api/v1/publications/${this.$route.query.id}`)
+        this.$toasted.success(`${this.data.title} deleted successfully`).goAway(5000)
+        this.$router.push('/creator-dashboard')
+      } catch (err) {
+        if (
+          err.message.includes(
+            "Cannot read properties of null (reading 'toLowerCase')"
+          ) ||
+            err.message.includes('Network')
+        ) {
+          this.$toasted.error('Check your connection.').goAway(5000)
+        } else {
+          this.$toasted.error(err?.response?.data?.msg).goAway(5000)
+        }
+      }
+      this.loader1 = false
     }
   }
 }
@@ -132,7 +168,7 @@ color: #07124C;
 }
 .small_text{
 font-weight: 500;
-font-size: 20px;
+font-size: 18px;
 line-height: 24px;
 color: #575757;
 }
@@ -192,7 +228,7 @@ line-height: 24px;
 color: #575757;
 }
 .border_btn{
-border: 1px solid #000000;
+border: 3px solid #000000;
 border-radius: 10px;
 width: 10rem;
 height: 3rem;
@@ -202,5 +238,20 @@ padding:.5rem 2rem;
 color:#000000;
 text-decoration:none;
 margin-top:2rem;
+font-weight:bold;
+text-align: center;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.border_btn_flex{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.delete{
+  border: 3px solid red;
+  color: red;
+  /* border-color: red; */
 }
 </style>

@@ -23,7 +23,7 @@
         <p class="p">
           Account ID
         </p>
-        <span class="s"> {{ account }} </span>
+        <span class="s"> {{ account === '0x00'? account: cutAddr(account) }} </span>
       </div>
     </div>
   </header>
@@ -41,7 +41,7 @@ export default {
     return {
       localData: false,
       showDetails: null,
-      account: '0.0.0',
+      account: '0x00',
       amount: '00.00',
       chainId: 8001,
       provider: null,
@@ -65,23 +65,20 @@ export default {
       this.$store.commit('checkConnected', this.showDetails)
       if (this.showDetails === false) {
         this.$router.push('/')
-      } else {
-        this.$router.push('/creator-dashboard')
       }
     },
     async checkNetworkChange () {
       if (this.chainId === 80001) {
         const accounts = await this.provider.listAccounts()
-        this.account = this.cutAddr(accounts[0])
+        this.account = accounts[0]
         this.provider.getBalance(accounts[0]).then((balance) => {
           const balanceInEth = ethers.utils.formatEther(balance).toString()
           const deci = balanceInEth.split('.')
           const end = deci[1].slice(0, 3)
           this.amount = deci[0].concat('.').concat(end)
         })
-        this.showDetails = true
+        this.login()
       } else {
-        this.showDetails = false
         this.$toasted.error("You're on  a wrong network. kindly switch to the Polygon Mumbai Testnet").goAway(3500)
       }
       return this.chainIsChanged
@@ -185,17 +182,37 @@ export default {
       const network = await this.provider.getNetwork()
       this.chainId = network.chainId
       if (this.chainId === 80001) {
-        this.account = this.cutAddr(accounts[0])
+        this.account = accounts[0]
         this.provider.getBalance(accounts[0]).then((balance) => {
           const balanceInEth = ethers.utils.formatEther(balance).toString()
           const deci = balanceInEth.split('.')
           const end = deci[1].slice(0, 3)
           this.amount = deci[0].concat('.').concat(end)
         })
-        this.showDetails = true
+        this.login()
       } else {
-        this.showDetails = false
         this.$toasted.error("You're on  a wrong network. kindly switch to the Polygon Mumbai Testnet").goAway(3500)
+      }
+    },
+    async login () {
+      try {
+        const token = await this.$axios.post('/api/v1/auth/sign', { address: this.account })
+        this.$store.commit('setToken', token?.data?.token)
+        this.$store.commit('setUserId', token.data?.UserId)
+        this.$store.commit('setUserAddress', this.account)
+        this.showDetails = true
+      } catch (err) {
+        if (
+          err.message.includes(
+            "Cannot read properties of null (reading 'toLowerCase')"
+          ) ||
+            err.message.includes('Network')
+        ) {
+          this.$toasted.error('Check your connection.').goAway(5000)
+        } else {
+          this.$toasted.error('Connection Failed').goAway(5000)
+        }
+        this.showDetails = false
       }
     }
   }

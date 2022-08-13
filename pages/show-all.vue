@@ -29,30 +29,23 @@
           </div>
         </div>
       </div>
-      <div class="rhs">
+      <div class="popular_categories">
         <h4 class="Big_text">
           Popular Categories
         </h4>
-        <div class="word_flex">
-          <span class="small_text">Mathematics</span>
-          <span class="small_text">English</span>
-          <span class="small_text">Literature</span>
-          <span class="small_text">Economics</span>
-          <span class="small_text">Religion</span>
-          <span class="small_text">Anatomy</span>
-          <span class="small_text">Engineering</span>
-          <span class="small_text">Biology</span>
+        <div class="category_flex">
+          <span v-for="unit,i in categorySet" :key="i" class="small_text">{{ capitalize(unit) }}</span>
         </div>
       </div>
     </div>
-    <div class="grid">
+    <div v-for="(item,index) in data" :key="index" class="grid">
       <div class="lhs">
         <h4 class="Big_text">
-          Basics of Financial Accounting
+          {{ item.title.toUpperCase() }}
         </h4>
         <div class="sub_text">
-          <p>Aurthur Velon</p>
-          <p>Dec 2022</p>
+          <p />
+          <p>{{ fullDate(item.createdAt) }}</p>
         </div>
         <p
           class="small_text"
@@ -60,30 +53,42 @@
         font-size: 18px;
         line-height: 34px;"
         >
-          We are also focused on supporting members of the DAO
+          {{ capitalize(item.description.slice(0,30)) }} {{ item.description.length> 20? '...' : '' }}
         </p>
         <div class="options_flex">
-          <span class="Big_text">Cite</span>
-          <span class="Big_text">Earnable</span>
-          <button class="border_btn">
+          <span class="big_text">{{ item.category === 'free'? 'Free' : 'Premium' }} </span>
+          <span class="small_text">{{ item.category === 'free'? '0 MATIC' : `${item.amount} Matic` }} </span>
+          <button class="border_btn" :disabled="item.type === 'premium'">
             Download
           </button>
         </div>
       </div>
       <div class="rhs">
-        <h4 class="Big_text">
-          Read summary
-        </h4>
-        <br>
-        <p class="small_text">
-          21 Available
-        </p>
+        <div class="small_ls" style="display:flex;justifyContent:center;flexDirection:column;alignItems:center">
+          <h4 class="Big_text clickable" @click="$router.push(`/publication-detail/?id=${item._id}`)">
+            Read summary
+          </h4>
+          <br>
+          <p class="small_text">
+            <img src="~assets/images/eye.png"> {{ item.views }}
+          </p>
+        </div>
+        <div class="small_ls" style="display:flex;justifyContent:center;flexDirection:column;alignItems:center">
+          <h4 class="Big_text clickable" @click="$router.push(`/publication-detail/?id=${item._id}`)">
+            Categories
+          </h4>
+          <br>
+          <div class="category_flex">
+            <span v-for="unit,i in item.categories" :key="i" class="small_text">{{ capitalize(unit) }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import functions from '~/utils/functions'
 export default {
   data () {
     return {
@@ -93,7 +98,58 @@ export default {
         negativeText: 'Earnable'
       },
       categories: [],
-      category: ''
+      category: '',
+      data: [],
+      categorySet: []
+    }
+  },
+  created () {
+    this.getAllPublications()
+  },
+  methods: {
+    fullDate: functions.fullDate,
+    capitalize: functions.capitalize,
+    cutAddr: functions.cutAddr,
+    async getAllPublications () {
+      try {
+        const data = await this.$axios.get('/api/v1/publications/')
+        this.data = data.data.publications
+        const popular = {}
+        this.data.map((y) => {
+          y.categories.map((x) => {
+            isNaN(popular[x]) === true ? popular[x] = 1 : popular[x] += 1
+            return x
+          })
+          return y
+        })
+        this.sortCatgories(popular)
+      } catch (err) {
+        if (
+          err.message.includes(
+            "Cannot read properties of null (reading 'toLowerCase')"
+          ) ||
+            err.message.includes('Network')
+        ) {
+          this.$toasted.error('Check your connection.').goAway(5000)
+        } else {
+          this.$toasted.error(err?.response?.data?.msg).goAway(5000)
+        }
+      }
+    },
+    sortCatgories (obj) {
+      const keys = Object.keys(obj)
+      // Start from the second element.
+      for (let i = 1; i < keys.length; i++) {
+        // Go through the elements behind it.
+        for (let j = i - 1; j > -1; j--) {
+          // value comparison using ascending order.
+          if (obj(keys[j + 1]) < obj(keys[j])) {
+            // swap
+            [keys[j + 1], keys[j]] = [keys[j], keys[j + 1]]
+          }
+        }
+      }
+      return keys
     }
   }
 }
@@ -147,6 +203,9 @@ background: #F4F6FE;
 font-size: 20px;
 color: #000000;
 }
+.clickable{
+  cursor: pointer;
+}
 .word_flex{
     width:70%;
     margin-left: 0;
@@ -168,27 +227,49 @@ color: rgba(0, 0, 0, 0.5);
 .sub_text{
     line-height: 24px;
 color: rgba(0, 0, 0, 0.5);
-    width:15rem;
+    width:100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-size:16px;
 }
 .options_flex{
     display:flex;
-    width: 70%;
+    width: 100%;
     justify-content: space-between;
     padding-top: 1rem;
     align-items:center;
 }
 .options_flex button{
-    border: 1px solid #000000;
+    border: 3px solid #000000;
 border-radius: 10px;
 width: 170px;
 height: 2.5rem;
 background:none;
 cursor:pointer;
+font-weight:bold;
 }
 .rhs{
     margin:auto 0;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+}
+.border_btn:disabled{
+  cursor:not-allowed;
+  border-color:rgb(185, 183, 183)
+}
+.category_flex{
+  display:flex;
+  justify-content:center;
+  align-items: center;
+}
+.popular_categories{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items: center;
+}
+.popular_categories h4{
+  margin-bottom:2rem;
 }
 </style>

@@ -7,10 +7,16 @@
           <br>
           <span class="pink_text">RESOURCES</span>
           <br>
-          <button class="btn margins">
-            <span v-if="!connected"> Become a Creator </span>
-            <span v-else @click="$router.push('/creator-dashboard')"> View Your Publications </span>
-          </button>
+          <div class="btn-flex">
+            <button class="btn margins">
+              <span v-if="!connected"> Become a Creator </span>
+              <span v-else @click="$router.push('/creator-dashboard')"> View Your Publications </span>
+            </button>
+            <br>
+            <button v-if="connected" class="btn margins inverted-colors">
+              <span @click="$router.push('/show-all')"> View All Publications </span>
+            </button>
+          </div>
         </div>
         <div class="left_align">
           Search for articles and<br>
@@ -245,4 +251,11 @@ footer{
   justify-content: space-between;
   padding:3rem;
 }
+.inverted-colors{
+  background: white;
+  color: #07124c;
+  margin-top:1rem;
+  border: 1px solid #07124c;
+}
+
 </style>

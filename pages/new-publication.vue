@@ -49,7 +49,8 @@
             </button>
           </p>
           <p v-else>
-            Only Pdf and Xls files are supported
+            <span v-if="!loader1"> Only Pdf and Xls files are supported </span>
+            <span v-if="loader1" style="textAlign:center"> loading...</span>
           </p>
         </div>
         <div class="rhs">
@@ -62,7 +63,7 @@
                   v-model="category"
                   type="radio"
                   name="category"
-                  value="Premium"
+                  value="premium"
                 >
                 <span>Premium</span>
               </label>
@@ -74,7 +75,7 @@
                   v-model="category"
                   type="radio"
                   name="category"
-                  value="Free"
+                  value="free"
                 >
                 <span>Free</span>
               </label>
@@ -94,13 +95,6 @@
 <script>
 // import { Web3Storage } from 'web3.storage'
 import { create } from 'ipfs-http-client'
-// import { HashConnect } from 'hashconnect'
-// import { ethers } from 'ethers'
-// import {
-//   Hbar,
-//   ContractFunctionParameters,
-//   ContractExecuteTransaction
-// } from '@hashgraph/sdk'
 export default {
   data () {
     return {
@@ -108,7 +102,9 @@ export default {
       description: '',
       category: '',
       selectedFiles: [],
-      loader: false
+      loader: false,
+      url: '',
+      loader1: false
     }
   },
   methods: {
@@ -116,52 +112,53 @@ export default {
       event.target.value = ''
       // this.document1 = null
     },
-    selectFile (event, index) {
-      // this.loading = true
-      const doc = event.target.files[0]
-      this.selectedFiles.push(doc)
-      // console.log(doc)
+    async selectFile (event, index) {
+      this.loader1 = true
+      const projectId = process.env.PROJECT_ID
+      const projectSecret = process.env.PROJECT_SECRET
+      const authorization = 'Basic ' + btoa(projectId + ':' + projectSecret)
+      try {
+        const doc = event.target.files[0]
+        const ipfs = create({
+          url: 'https://ipfs.infura.io:5001',
+          headers: {
+            authorization
+          }
+        })
+        const created = await ipfs.add(doc)
+        this.url = `https://miller.infura-ipfs.io/ipfs/${created.path}`
+        if (this.url) { this.selectedFiles.push(doc) }
+      } catch (error) {
+        console.log(error.message)
+        this.$toasted.error('File upload failed').goAway(5000)
+      }
+      this.loader1 = false
     },
     async main () {
-      // const hashconnect = new HashConnect()
       this.loader = true
-      // const provider = hashconnect.getProvider(
-      //   'testnet',
-      //   this.$store.state.walletDetails.topic,
-      //   '0.0.34750378'
-      // )
-      // // console.log(walletData[1])
-      // const signer = hashconnect.getSigner(provider)
-      // // const functionCall = encodeFunctionCall('upload', [this.category === 'Premium' ? 0 : 1])
-      // const contractExecTx = await new ContractExecuteTransaction()
-      //   .setContractId('0.0.34804013')
-      //   .setGas(3000000)
-      //   .setFunction('create', new ContractFunctionParameters()
-      //     .addString(this.category === 'Premium' ? 0 : 1))
-      //   .setPayableAmount(new Hbar(ethers.utils.parseUnits(0.0000000000000001, 8)))
-      //   .freezeWithSigner(signer)
-      // const res = await contractExecTx.executeWithSigner(signer)
-      // const resRx = await res.getReceipt(signer)
 
-      // console.log(`- Token association with Contract's account: ${resRx} \n`)
-      const client = create('https://ipfs.infura.io:5001/api/v0')
       try {
-        const created = await client.add(this.selectedFiles[0])
-        const url = `https://ipfs.infura.io/ipfs/${created.path}`
-        // console.log(url)
         const dataToSave = {
           title: this.title,
           description: this.description,
-          date: new Date(),
-          id: Date.now(),
-          url
+          cid: this.url,
+          category: this.category
         }
-        const arr = JSON.parse(localStorage.getItem('Publications')) || []
-        arr.push(dataToSave)
-        localStorage.setItem('Publications', JSON.stringify(arr))
+        const data = await this.$axios.post('/api/v1/publications', dataToSave)
+        console.log(data)
+        this.$toasted.success(data?.data?.msg).goAway(5000)
         this.$router.push('/creator-dashboard')
-      } catch (error) {
-        // console.log(error.message)
+      } catch (err) {
+        if (
+          err.message.includes(
+            "Cannot read properties of null (reading 'toLowerCase')"
+          ) ||
+            err.message.includes('Network')
+        ) {
+          this.$toasted.error('Check your connection.').goAway(5000)
+        } else {
+          this.$toasted.error(err?.response?.data?.msg).goAway(5000)
+        }
       }
       this.loader = false
     }
