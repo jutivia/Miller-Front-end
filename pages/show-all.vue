@@ -41,13 +41,15 @@
     <FullScreenLoader v-if="loading" />
     <div v-for="(item,index) in data" v-else :key="index" class="grid" @click="renderUnitItems(item)">
       <div class="lhs">
-        <h4 class="Big_text">
-          {{ item.title.toUpperCase() }}
-        </h4>
-        <div class="sub_text">
-          <p class="date">
-            {{ fullDate(item.createdAt) }}
-          </p>
+        <div class="title_header">
+          <h4 class="Big_text">
+            {{ item.title.toUpperCase().slice(0,35) }} {{ item.title.length > 35? '...' : '' }}
+          </h4>
+          <div class="sub_text">
+            <p class="date">
+              {{ fullDate(item.createdAt) }}
+            </p>
+          </div>
         </div>
         <br>
         <p
@@ -61,9 +63,9 @@
         <div class="options_flex">
           <span class="big_text">{{ item.category === 'free'? 'Free' : 'Premium' }} </span>
           <span class="small_text green">{{ item.category === 'free'? '0 MATIC' : `${item.amount} Matic` }} </span>
-          <button class="border_btn" @click="downloadPublication = true">
-            Download
-          </button>
+          <div @click="downloadPublication = true">
+            <img src="~assets/images/download.svg">
+          </div>
         </div>
       </div>
       <div v-if="downloadPublication" class="messageBody">
@@ -110,7 +112,7 @@
           </h4>
           <br>
           <p class="small_text download_flex">
-            <img src="~assets/images/download.svg"> {{ item.views }}
+            {{ item.views }} Downloads
           </p>
         </div>
         <div class="small_ls" style="display:flex;justifyContent:center;flexDirection:column;alignItems:center;">
@@ -328,14 +330,16 @@ color: #000000;
 font-size: 16px;
 color: rgba(0, 0, 0, 0.5);
 }
-.small_text img{
-  width:40px;
-  height:40px;
+div img{
+  width:3rem;
+  height:3rem;
+  cursor:pointer;
+  /* margin-top:-.3rem */
 }
 .sub_text{
     /* line-height: 24px; */
     color: rgba(0, 0, 0, 0.5);
-    width:100%;
+    width:auto;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -407,5 +411,12 @@ font-weight:bold;
   display:flex;
   justify-content:center;
   align-items:center;
+  gap:.5rem;
+}
+.title_header{
+   display:flex;
+  justify-content:space-between;
+  align-items:center;
+  width:100%;
 }
 </style>

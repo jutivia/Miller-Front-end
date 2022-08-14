@@ -24,24 +24,25 @@
           placeholder="Enter Amount In Matic"
           class="text"
         >
-        <div class="categories">
-          <span v-for="i,index in categories" :key="index" class="selected_categories">{{ i }} <img src="~/assets/images/delete.svg" style="curor:pointer" @click="categories.splice(index,1)"></span>
-          <div class="">
-            <input
-              id=""
-              v-model="item"
-              type="text"
-              placeholder="Enter Category"
-              class="category_text"
-              @click="showOptions = true"
-              @click.stop
-              @keyup="search(item.trim())"
-              @keyup.enter="categories.push(item); item=''; options= copyOptions"
-            >
-            <div v-if="showOptions" class="dropDown">
-              <span v-for="option, i in options" :key="i" class="option" @click="categories.push(option)"> {{ capitalize(option) }}</span>
-            </div>
+
+        <div class="">
+          <input
+            id=""
+            v-model="item"
+            type="text"
+            placeholder="Enter Category"
+            class="category_text"
+            @click="showOptions = true"
+            @click.stop
+            @keyup="search(item.trim())"
+            @keyup.enter="categories.push(item); item=''; options= copyOptions"
+          >
+          <div v-if="showOptions" class="dropDown">
+            <span v-for="option, i in options" :key="i" class="option" @click="categories.push(option)"> {{ capitalize(option) }}</span>
           </div>
+        </div>
+        <div class="categories">
+          <span v-for="i,index in categories" :key="index" class="selected_categories">{{ i }} <span class="x" @click="categories.splice(index,1)"> X </span></span>
         </div>
         <div class="upload_grid">
           <div class="lhs">
@@ -264,7 +265,13 @@ font-weight: 500;
 font-size: 24px;
 margin-bottom: 2rem;
 font-family: 'Montserrat';
+/* border: .5px solid #07124c; */
+box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
 /* color:grey; */
+}
+.text:focus{
+  outline:none;
+  background-color:rgba(255, 255, 255, 0.5);
 }
 .upload_grid{
     display: grid;
@@ -390,26 +397,27 @@ button:disabled{
 }
 .selected_categories, .category_text{
   width:auto;
-  padding:7px 10px;
+  padding:10px 10px;
   background:white;
   border-radius:10px;
-  border: 3px dotted #07124c;
+  border: 1px solid #07124c33;
   color:#07124c;
   font-weight:bold;
   max-height:auto;
   display:flex;
   justify-content:space-around;
   align-items:center;
-  gap:7px;
-  min-height:3.5rem;
-  min-width:7rem;
+  gap:.7rem;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
-.selected_categories img{
-  width:20px;
-  height:20px;
+.selected_categories .x{
+  font-size:10px;
+  cursor:pointer;
+  color:red;
+  transition: all 0.25s ease-in-out
 }
-.category_text:focus{
-  /* outline:none; */
+.selected_categories .x:hover{
+  transform: scale(1.5);
 }
 .categories{
   display:flex;
@@ -420,9 +428,18 @@ button:disabled{
 }
 .category_text{
   position:relative;
-  padding: 10px 10px;
-  border: 3px solid #07124c;
-  min-width:20rem;
+  padding: 1.5rem 10px;
+  /* border: .5px solid #07124c; */
+  border:none;
+  min-width:100%;
+  padding-left:1rem;
+  box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+  font-family: 'Montserrat';
+  font-size: 24px;
+  font-weight:normal;
+}
+.category_text:focus{
+  outline:none;
 }
 .dropDown{
   position:absolute;

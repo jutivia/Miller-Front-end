@@ -466,7 +466,7 @@ button .count {
   margin: 0 0;
   border-spacing: 0px;
   overflow-x: scroll;
-  background: white;
+  background: rgba(209, 209, 209, 0.727);
 }
 .space {
   padding: 0 8px;
@@ -486,10 +486,17 @@ button .count {
 }
 .table-row:nth-of-type(odd) {
   text-align: left;
-  /* background: #f1f1f1; */
+  background: #f1f1f1;
   font-size: 16px;
   line-height: 18px;
-  border-radius: 20px;
+  border-radius: 10px;
+}
+.table-row:nth-of-type(even) {
+  text-align: left;
+  background: #b19f9f;
+  font-size: 16px;
+  line-height: 18px;
+  border-radius: 10px;
 }
 th {
   padding: 24px 14px;

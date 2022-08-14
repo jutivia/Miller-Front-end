@@ -29,8 +29,8 @@
                   <Loader :color="color" :border-width="4" :size="40" />
                 </div>
                 <div v-for="option, i in data" v-else :key="i" class="option" @click="$router.push(`/publication-detail/?id=${option._id}`)">
-                  <span class="big_text">{{ capitalize(option.title) }}</span>
-                  <span class="small_text">{{ capitalize(option.description.slice(0,50)) }} {{ option.description.length> 20? '...' : '' }}</span>
+                  <span class="big_text">{{ capitalize(option.title.slice(0,40)) }} {{ option.title.length> 40? '...' : '' }}</span>
+                  <span class="small_text">{{ capitalize(option.description.slice(0,100)) }} {{ option.description.length> 20? '...' : '' }}</span>
                 </div>
                 <EmptyState v-if="!data.length && !loading" page="search" />
               </div>
@@ -180,11 +180,10 @@ export default {
   padding-left: 5rem;
   width: 100%;
   text-align: left;
-  font-weight: 700;
-  font-size: 30px;
-  line-height: 49px;
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 1;
   color: #f4f6fe;
-  line-height:70px;
 }
 .right_align_main{
    text-align: right;
@@ -210,7 +209,6 @@ export default {
   flex-direction:column;
 }
 .right_align .pink_text {
-  padding-top:1rem;
   color: #cf6dbb;
   background: linear-gradient(
     white 5%,
@@ -219,7 +217,8 @@ export default {
   );
    background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-size: 6.1rem;
+  font-size: 8rem;
+  line-height:.9;
 }
 .margins{
     margin-top: 4rem;
@@ -349,23 +348,25 @@ footer{
 .option{
   color: #07124c;
   background-color:rgba(187, 187, 187, 0.282);
-  padding:.5rem 2rem;
+  padding:1rem 2rem;
   margin-bottom:.8rem;
+  border-radius: 10px;
 }
 .option:hover{
   background-color: #172a89;
   color: white;
-  border-radius: 10px;
 }
 .option .big_text{
+  line-height:1;
   font-size:18px;
   display: block;
+  margin-bottom:1rem;
 }
 .option .small_text{
   font-size:14px;
   display: block;
   color:rgb(94, 93, 93);
-  margin-top:-1rem;
+  line-height:1.5;
 }
 .option:hover .small_text{
   color:rgb(215, 210, 210);

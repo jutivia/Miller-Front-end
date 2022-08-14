@@ -4,7 +4,7 @@
       <GoBack back="All Publications" path="/show-all" />
     </div>
     <div class="table">
-      <h1> My Dashboard </h1>
+      <h1> Dashboard </h1>
       <div v-if="loading" class="overlay-screen" />
       <FullScreenLoader v-if="loading" />
       <SaturnTable
@@ -26,8 +26,8 @@ export default {
       tableData: {
         rowPerPage: 10,
         headers: [
-          { key: 'title', label: 'My Title', type: 'string' },
-          { key: 'description', label: 'My Publications', type: 'string' },
+          { key: 'title', label: 'Title', type: 'string' },
+          { key: 'description', label: 'Publications', type: 'string' },
           { key: 'views', label: 'Views', type: 'string' },
           { key: 'earning', label: 'Earnings', type: 'string' },
           { key: 'createdAt', label: 'Date Uploaded', type: 'date/time' }
