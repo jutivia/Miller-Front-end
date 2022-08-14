@@ -1,7 +1,8 @@
 <template>
   <div>
-    <button class="go-back" @click="goBack()">
+    <button @click="goBack(path)">
       <svg
+        class="go-back"
         width="20"
         height="25"
         viewBox="0 0 24 31"
@@ -15,7 +16,7 @@
           fill="#57565C"
         />
       </svg>
-      {{ backText }}
+      {{ back }}
     </button>
   </div>
 </template>
@@ -23,30 +24,48 @@
 <script>
 export default {
   props: {
-    backText: {
+    back: {
       type: String,
-      required: false,
-      default: 'Go Back'
+      default: 'go back'
+    },
+    path: {
+      type: String,
+      default: '/'
     }
   },
   methods: {
-    goBack () {
-      window.history.back()
+    goBack (path) {
+      this.$router.push(path)
     }
   }
 }
 </script>
 
 <style scoped>
+button{
+  border:none;
+  background:transparent;
+  display:flex;
+  align-items:center;
+  color: #75759e;
+}
+button:hover{
+  color:rgb(165, 165, 165);
+}
 .go-back {
   display: flex;
   align-items: center;
   font-size: 14px;
-  background-color: transparent;
+  background-color: #75759e41;
   border: none;
+  border-radius:50%;
+  height:20px;
+  width:20px;
+  padding:3px;
+
 }
 
 svg {
-  margin-right: 5px;
+  margin-right: 13px;
 }
 </style>

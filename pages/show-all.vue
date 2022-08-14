@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div class="go-back-btn">
+      <GoBack back="Home" />
+    </div>
     <div class="grid">
       <div class="lhs">
         <span class="clear" @click="clearFilter()">
@@ -36,26 +39,28 @@
       </div>
     </div>
     <FullScreenLoader v-if="loading" />
-    <div v-for="(item,index) in data" v-else :key="index" class="grid" @click="title= item.title; amount = item.amount; cid=item.cid">
+    <div v-for="(item,index) in data" v-else :key="index" class="grid" @click="renderUnitItems(item)">
       <div class="lhs">
         <h4 class="Big_text">
           {{ item.title.toUpperCase() }}
         </h4>
         <div class="sub_text">
-          <p />
-          <p>{{ fullDate(item.createdAt) }}</p>
+          <p class="date">
+            {{ fullDate(item.createdAt) }}
+          </p>
         </div>
+        <br>
         <p
           class="small_text"
           style="color: #575757;font-weight: 500;
         font-size: 18px;
         line-height: 34px;"
         >
-          {{ capitalize(item.description.slice(0,30)) }} {{ item.description.length> 20? '...' : '' }}
+          {{ capitalize(item.description.slice(0,100)) }} {{ item.description.length> 20? '...' : '' }}
         </p>
         <div class="options_flex">
           <span class="big_text">{{ item.category === 'free'? 'Free' : 'Premium' }} </span>
-          <span class="small_text">{{ item.category === 'free'? '0 MATIC' : `${item.amount} Matic` }} </span>
+          <span class="small_text green">{{ item.category === 'free'? '0 MATIC' : `${item.amount} Matic` }} </span>
           <button class="border_btn" @click="downloadPublication = true">
             Download
           </button>
@@ -70,20 +75,18 @@
               <h6> Would you like to proceed? </h6>
               <br>
               <div class="btn-flex">
-                <a
-                  target="_blank"
-                  :href="cid"
+                <button
                   class="saturn-btn"
                   @click="
-                    downloadPublication = false;
+                    download();
                   "
                   @click.stop
                 >
-                  <span v-if="!loader1" class="text">
+                  <span v-if="!downloadLoder" class="text">
                     Yes
                   </span>
                   <Loader v-else />
-                </a>
+                </button>
                 <button
                   class="saturn-btn grey"
                   @click="
@@ -102,16 +105,16 @@
       </div>
       <div class="rhs">
         <div class="small_ls" style="display:flex;justifyContent:center;flexDirection:column;alignItems:center">
-          <h4 class="Big_text clickable" @click="$router.push(`/publication-detail/?id=${item._id}`)">
+          <h4 class="Big_text clickable pink_button" @click="$router.push(`/publication-detail/?id=${item._id}`)">
             Read summary
           </h4>
           <br>
-          <p class="small_text">
-            <img src="~assets/images/eye.png"> {{ item.views }}
+          <p class="small_text download_flex">
+            <img src="~assets/images/download.svg"> {{ item.views }}
           </p>
         </div>
-        <div class="small_ls" style="display:flex;justifyContent:center;flexDirection:column;alignItems:center">
-          <h4 class="Big_text clickable" @click="$router.push(`/publication-detail/?id=${item._id}`)">
+        <div class="small_ls" style="display:flex;justifyContent:center;flexDirection:column;alignItems:center;">
+          <h4 class="Big_text">
             Categories
           </h4>
           <br>
@@ -143,7 +146,9 @@ export default {
       loader1: false,
       title: '',
       amount: 0,
-      cid: ''
+      cid: '',
+      id: '',
+      downloadLoder: false
     }
   },
   computed: {
@@ -218,6 +223,32 @@ export default {
     clearFilter () {
       this.getAllPublications('free')
       this.category = ''
+    },
+    async download () {
+      this.downloadLoder = true
+      try {
+        const data = await this.$axios.get(`/api/v1/publications/cid/${this.id}`)
+        this.cid = data.data.updatedCount.cid
+        window.open(this.cid, '_blank').focus()
+        this.downloadPublication = false
+      } catch (err) {
+        if (
+          err.message.includes(
+            "Cannot read properties of null (reading 'toLowerCase')"
+          ) ||
+            err.message.includes('Network')
+        ) {
+          this.$toasted.error('Check your connection.').goAway(5000)
+        } else {
+          this.$toasted.error(err?.response?.data?.msg).goAway(5000)
+        }
+      }
+      this.downloadLoder = false
+    },
+    renderUnitItems (item) {
+      this.title = item.title
+      this.amount = item.amount
+      this.id = item._id
     }
   }
 }
@@ -297,14 +328,19 @@ color: #000000;
 font-size: 16px;
 color: rgba(0, 0, 0, 0.5);
 }
+.small_text img{
+  width:40px;
+  height:40px;
+}
 .sub_text{
-    line-height: 24px;
-color: rgba(0, 0, 0, 0.5);
+    /* line-height: 24px; */
+    color: rgba(0, 0, 0, 0.5);
     width:100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    font-size:16px;
+    font-size:12px;
+    background-color:white;
 }
 .options_flex{
     display:flex;
@@ -347,5 +383,29 @@ font-weight:bold;
 }
 .popular_categories h4{
   margin-bottom:2rem;
+}
+.pink_button{
+  color: #cf6dbb;
+  padding:10px 20px;
+  border: 3px dotted #cf6dbb;
+  border-radius: 10px;
+}
+.date{
+   background-color: #455eda;
+  padding:8px 10px;
+  color:white;
+  border-radius: 10px;
+  width:max-content;
+  text-align:right;
+  font-weight:bolder;
+}
+.green{
+  color:#3cda7d;
+  font-weight: bolder;
+}
+.download_flex{
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 </style>

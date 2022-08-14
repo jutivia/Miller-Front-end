@@ -1,14 +1,19 @@
 <template>
-  <div class="table">
-    <h1> My Dashboard </h1>
-    <div v-if="loading" class="overlay-screen" />
-    <FullScreenLoader v-if="loading" />
-    <SaturnTable
-      v-if="!empty || !loading"
-      :data="tableData"
-      @action="rowSelected"
-    />
-    <EmptyState v-if="empty" page="dashboard" />
+  <div class="">
+    <div class="go-back-btn">
+      <GoBack back="Home" path="/" />
+    </div>
+    <div class="table">
+      <h1> My Dashboard </h1>
+      <div v-if="loading" class="overlay-screen" />
+      <FullScreenLoader v-if="loading" />
+      <SaturnTable
+        v-if="!empty || !loading"
+        :data="tableData"
+        @action="rowSelected"
+      />
+      <EmptyState v-if="empty" page="dashboard" />
+    </div>
   </div>
 </template>
 
@@ -71,8 +76,8 @@ export default {
           this.empty = true
         } else {
           this.tableData.labels.map((x) => {
-            x.title = this.capitalize(x.title)
-            x.description = this.capitalize(x.description.slice(0, 20))
+            x.title = this.capitalize(x.title.slice(0, 30)) + `${x.title.length > 20 ? '...' : ''}`
+            x.description = this.capitalize(x.description.slice(0, 40)) + `${x.description.length > 20 ? '...' : ''}`
             x.earning = '0.00 Matic'
             return x
           })

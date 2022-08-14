@@ -1,118 +1,124 @@
 <template>
-  <div class="upload_container" @click="showOptions = false">
-    <div class="main_container">
-      <input id="" v-model="title" type="text" placeholder="Enter Title" class="text">
-      <br>
-      <textarea
-        id=""
-        v-model="description"
-        cols="50"
-        rows="10"
-        placeholder="Brief Description"
-        class="text"
-      />
-      <input
-        v-if="type=='premium'"
-        id=""
-        v-model="amount"
-        type="amount"
-        placeholder="Enter Amount In Matic"
-        class="text"
-      >
-      <div class="categories">
-        <span v-for="i,index in categories" :key="index" class="selected_categories">{{ i }} <img src="~/assets/images/delete.svg" style="curor:pointer" @click="categories.splice(index,1)"></span>
-        <div class="">
-          <input
-            id=""
-            v-model="item"
-            type="text"
-            placeholder="Enter Category"
-            class="category_text"
-            @click="showOptions = true"
-            @click.stop
-            @keyup="search(item.trim())"
-            @keyup.enter="categories.push(item); item=''; options= copyOptions"
-          >
-          <div v-if="showOptions" class="dropDown">
-            <span v-for="option, i in options" :key="i" class="option" @click="categories.push(option)"> {{ capitalize(option) }}</span>
+  <div class="">
+    <div class="go-back-btn">
+      <GoBack back="All Publications" path="/show-all" />
+    </div>
+
+    <div class="upload_container" @click="showOptions = false">
+      <div class="main_container">
+        <input id="" v-model="title" type="text" placeholder="Enter Title" class="text">
+        <br>
+        <textarea
+          id=""
+          v-model="description"
+          cols="50"
+          rows="10"
+          placeholder="Brief Description"
+          class="text"
+        />
+        <input
+          v-if="type=='premium'"
+          id=""
+          v-model="amount"
+          type="amount"
+          placeholder="Enter Amount In Matic"
+          class="text"
+        >
+        <div class="categories">
+          <span v-for="i,index in categories" :key="index" class="selected_categories">{{ i }} <img src="~/assets/images/delete.svg" style="curor:pointer" @click="categories.splice(index,1)"></span>
+          <div class="">
+            <input
+              id=""
+              v-model="item"
+              type="text"
+              placeholder="Enter Category"
+              class="category_text"
+              @click="showOptions = true"
+              @click.stop
+              @keyup="search(item.trim())"
+              @keyup.enter="categories.push(item); item=''; options= copyOptions"
+            >
+            <div v-if="showOptions" class="dropDown">
+              <span v-for="option, i in options" :key="i" class="option" @click="categories.push(option)"> {{ capitalize(option) }}</span>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="upload_grid">
-        <div class="lhs">
-          <p>Upload File</p>
-          <div class="upload_flex">
-            <div class="file_type_container">
-              <input
-                id="file-upload"
-                type="file"
-                name="file"
-                required
-                accept=".pdf"
-                :disabled="selectedFiles.length === 1"
-                @change="selectFile"
-                @click="resetFile($event)"
-              >
-              <img src="~assets/images/pdf.png">
+        <div class="upload_grid">
+          <div class="lhs">
+            <p>Upload File</p>
+            <div class="upload_flex">
+              <div class="file_type_container">
+                <input
+                  id="file-upload"
+                  type="file"
+                  name="file"
+                  required
+                  accept=".pdf"
+                  :disabled="selectedFiles.length === 1"
+                  @change="selectFile"
+                  @click="resetFile($event)"
+                >
+                <img src="~assets/images/pdf.png">
+              </div>
+              <div class="file_type_container">
+                <input
+                  id="file-upload"
+                  type="file"
+                  name="file"
+                  required
+                  accept=".xls"
+                  :disabled="selectedFiles.length === 1"
+                  @change="selectFile"
+                  @click="resetFile($event)"
+                >
+                <img src="~assets/images/xls.png">
+              </div>
             </div>
-            <div class="file_type_container">
-              <input
-                id="file-upload"
-                type="file"
-                name="file"
-                required
-                accept=".xls"
-                :disabled="selectedFiles.length === 1"
-                @change="selectFile"
-                @click="resetFile($event)"
-              >
-              <img src="~assets/images/xls.png">
-            </div>
+            <p v-if="selectedFiles[0]" class="only_file">
+              {{ selectedFiles[0]? selectedFiles[0].name.slice(0, 25): '' }}
+              <button class="cancel" @click="selectedFiles.pop()" @click.stop>
+                x
+              </button>
+            </p>
+            <p v-else>
+              <span v-if="!loader1"> Only Pdf and Xls files are supported </span>
+              <span v-if="loader1" style="textAlign:center"> loading...</span>
+            </p>
           </div>
-          <p v-if="selectedFiles[0]" class="only_file">
-            {{ selectedFiles[0]? selectedFiles[0].name.slice(0, 25): '' }}
-            <button class="cancel" @click="selectedFiles.pop()" @click.stop>
-              x
+          <div class="rhs">
+            <p>Select Types</p>
+            <div class="checkbox-container">
+              <div class="checkbox">
+                <label for="" class="label-name-2">
+                  <input
+                    id="text-field19"
+                    v-model="type"
+                    type="radio"
+                    name="type"
+                    value="premium"
+                  >
+                  <span>Premium</span>
+                </label>
+              </div>
+              <div class="checkbox">
+                <label for="" class="label-name-2">
+                  <input
+                    id="text-field19"
+                    v-model="type"
+                    type="radio"
+                    name="type"
+                    value="free"
+                  >
+                  <span>Free</span>
+                </label>
+              </div>
+            </div>
+            <p>Note  please note that you would not get any incentives on free types</p>
+            <button class="btn submit" :disabled="!title || !description || !selectedFiles.length || !type || !categories.length" @click="main()">
+              <Loader v-if="loader" />
+              <span v-else> Submit </span>
             </button>
-          </p>
-          <p v-else>
-            <span v-if="!loader1"> Only Pdf and Xls files are supported </span>
-            <span v-if="loader1" style="textAlign:center"> loading...</span>
-          </p>
-        </div>
-        <div class="rhs">
-          <p>Select Types</p>
-          <div class="checkbox-container">
-            <div class="checkbox">
-              <label for="" class="label-name-2">
-                <input
-                  id="text-field19"
-                  v-model="type"
-                  type="radio"
-                  name="type"
-                  value="premium"
-                >
-                <span>Premium</span>
-              </label>
-            </div>
-            <div class="checkbox">
-              <label for="" class="label-name-2">
-                <input
-                  id="text-field19"
-                  v-model="type"
-                  type="radio"
-                  name="type"
-                  value="free"
-                >
-                <span>Free</span>
-              </label>
-            </div>
           </div>
-          <p>Note  please note that you would not get any incentives on free types</p>
-          <button class="btn submit" :disabled="!title || !description || !selectedFiles.length || !type || !categories.length" @click="main()">
-            <Loader v-if="loader" />
-            <span v-else> Submit </span>
-          </button>
         </div>
       </div>
     </div>
@@ -136,7 +142,8 @@ export default {
       item: '',
       options: [],
       showOptions: false,
-      copyOptons: []
+      copyOptons: [],
+      amount: ''
     }
   },
   created () {
