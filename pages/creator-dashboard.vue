@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <div class="go-back-btn">
-      <GoBack back="Home" path="/" />
+      <GoBack back="All Publications" path="/show-all" />
     </div>
     <div class="table">
       <h1> My Dashboard </h1>

@@ -3,17 +3,17 @@
     <div>
       <div class="hero">
         <div class="right_align">
-          Your Access To Unlimited
-          <br>
-          <span class="pink_text">RESOURCES</span>
-          <br>
+          <h1>YOUR ACCESS TO</h1>
+          <h1> UNLIMITED</h1>
+          <h1 class="pink_text">
+            RESOURCES
+          </h1>
           <div class="">
-            <button class="btn margins">
-              <span v-if="!connected"> Become a Creator </span>
-              <span v-else @click="$router.push('/creator-dashboard')"> View Your Publications </span>
+            <!-- <br> -->
+            <button v-if="!connected" class="btn margins">
+              <span> Become A Creator </span>
             </button>
-            <br>
-            <button v-if="connected" class="btn margins inverted-colors">
+            <button v-if="connected" class="btn margins">
               <span @click="$router.push('/show-all')"> View All Publications </span>
             </button>
           </div>
@@ -173,38 +173,53 @@ export default {
 .hero {
   background: url("~assets/images/Miller_mainPic.png");
   width: 100%;
-  height: 90vh;
+  height: 92vh;
 }
 .right_align {
-  padding-top: 10rem;
-  padding-right: 5rem;
+  padding-top: 7rem;
+  padding-left: 5rem;
   width: 100%;
-  text-align: right;
-  font-weight: 600;
-  font-size: 40px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 30px;
   line-height: 49px;
   color: #f4f6fe;
+  line-height:70px;
 }
 .right_align_main{
    text-align: right;
    padding-right: 4rem;
    color: #07124C;
    font-weight: 600;
-   font-size: 36px;
+   font-size: 30px;
    line-height: 44px;
    margin-bottom:3rem;
 }
 .left_align {
-  padding-top: 4rem;
-  padding-left: 5rem;
+  padding-top: 0rem;
+  padding-right: 5rem;
   width: 100%;
   font-weight: 600;
   font-size: 40px;
   line-height: 49px;
   color: #f4f6fe;
+  text-align:right;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-direction:column;
 }
-.pink_text {
+.right_align .pink_text {
+  padding-top:1rem;
   color: #cf6dbb;
+  background: linear-gradient(
+    white 5%,
+    #5a67a6 25%,
+    #cf6dbb 70%
+  );
+   background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 6.1rem;
 }
 .margins{
     margin-top: 4rem;
@@ -213,13 +228,13 @@ export default {
 }
 .search-ctn {
     margin-top:3rem;
-   width: 521px;;
+   width: 521px;
   height: 55px;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   background: white;
   border-radius: 5px;
-  margin-right: 5.5rem;
   padding-right: 1.125rem;
   transition: box-shadow 0.2s ease-in-out;
 }
@@ -325,9 +340,11 @@ footer{
   border: 1px solid #e2e2ea;
   box-shadow: -1px 10px 15px rgba(117, 117, 158, 0.1);
   border-radius: 10px;
+  width:521px;
   min-height:1rem;
   min-width: auto;
   top:0;
+  text-align:left;
 }
 .option{
   color: #07124c;

@@ -10,6 +10,9 @@
       </button>
     </div>
     <div v-else class="upload">
+      <button class="btn myPublications" @click="$router.push('/creator-dashboard')">
+        <span> My Publications </span>
+      </button>
       <button class="btn margins" @click="$router.push('/new-publication')">
         Upload Publication
       </button>
@@ -219,7 +222,7 @@ header {
   display: flex;
   align-items: center;
   padding: 0.813rem 2.313rem 0.75rem 1.563rem;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.951);
   box-shadow: inset 0px -1px 0px #e2e2ea;
   height:5rem;
 }
@@ -246,9 +249,9 @@ margin-right:2.5rem;
 .upload{
   margin-right:2.5rem;
   width:auto;
-  min-width:40rem;
+  min-width:50rem;
   display:flex;
-  justify-content:space-between;
+  justify-content:space-around;
   align-items:center;
 }
 .p{
@@ -261,5 +264,12 @@ color: #07124C;
   font-weight: 500;
 font-size: 16px;
 color: #575757;
+}
+.myPublications{
+  background-color:transparent;
+  color: #07124C;
+  width: max-content;
+  font-weight:700;
+  padding: 5px;
 }
 </style>

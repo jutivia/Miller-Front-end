@@ -54,7 +54,7 @@
       <div class="rhs">
         <div class="right_flex">
           <h4 class="big_text">
-            Views
+            Downloads
           </h4>
           <h4 v-if="$store.state.userId === data.createdBy" class="big_text">
             Earnings
@@ -64,7 +64,7 @@
           </h4>
         </div>
         <div class="right_flex">
-          <p class="small_text">
+          <p class="small_text download_flex">
             <img src="~assets/images/download.svg"> {{ data.views }}
           </p>
           <p v-if="$store.state.userId === data.createdBy" class="small_text">
@@ -357,5 +357,14 @@ justify-content: center;
   border: 3px solid red;
   color: red;
   /* border-color: red; */
+}
+.download_flex{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.small_text img{
+  width:40px;
+  height:40px;
 }
 </style>
