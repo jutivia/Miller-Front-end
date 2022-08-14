@@ -6,7 +6,8 @@ export const state = () => ({
   provider: null,
   token: null,
   userId: null,
-  userAddress: null
+  userAddress: null,
+  switchState: null
 })
 
 export const mutations = {
@@ -27,6 +28,9 @@ export const mutations = {
   },
   setUserAddress (state, details) {
     state.userAddress = details
+  },
+  setSwitchState (state, details) {
+    state.switchState = details
   }
 }
 export const actions = {

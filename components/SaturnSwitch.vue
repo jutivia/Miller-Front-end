@@ -39,7 +39,7 @@ export default {
   methods: {
     event (state) {
       this.state = state
-      this.$emit('state', state)
+      this.$store.commit('setSwitchState', state)
     }
     // catchOnScrollEventOnWindows () {
     //   window.addEventListener('scroll', () => {
@@ -53,7 +53,7 @@ export default {
     // setDetailsSwitchNoted () {
     //   this.$store.commit('setDetailsSwitchNoted', true)
     //   this.$store.commit('setDisableScreen', false)
-    // }
+    // // }
   }
 }
 </script>
@@ -64,7 +64,7 @@ export default {
   display: flex;
   align-items: flex-end;
   position: relative;
-  z-index: 25;
+  z-index: 9;
   transition: 0.2s;
 }
 .switch-button {

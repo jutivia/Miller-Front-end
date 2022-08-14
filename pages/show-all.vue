@@ -2,20 +2,17 @@
   <div>
     <div class="grid">
       <div class="lhs">
-        <span class="filter_flex">
-          Filter
-          <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 4H13V6H3V4ZM0 0H16V2H0V0ZM6 8H10V10H6V8Z" fill="black" />
-          </svg>
+        <span class="clear" @click="clearFilter()">
+          Clear Filter
         </span>
         <br>
-        <div class="category_flex">
-          <select v-model="category" placeholder="Select Category" required class="select_category">
+        <div class="filter_flex">
+          <select v-model="category" placeholder="Filter Category" required class="select_category" @change="showCategory(category)">
             <option value="" selected>
               Select category
             </option>
             <option
-              v-for="(unit, index) in categories"
+              v-for="(unit, index) in categorySet"
               :key="index"
               :value="unit"
             >
@@ -38,7 +35,8 @@
         </div>
       </div>
     </div>
-    <div v-for="(item,index) in data" :key="index" class="grid">
+    <FullScreenLoader v-if="loading" />
+    <div v-for="(item,index) in data" v-else :key="index" class="grid" @click="title= item.title; amount = item.amount; cid=item.cid">
       <div class="lhs">
         <h4 class="Big_text">
           {{ item.title.toUpperCase() }}
@@ -58,9 +56,48 @@
         <div class="options_flex">
           <span class="big_text">{{ item.category === 'free'? 'Free' : 'Premium' }} </span>
           <span class="small_text">{{ item.category === 'free'? '0 MATIC' : `${item.amount} Matic` }} </span>
-          <button class="border_btn" :disabled="item.type === 'premium'">
+          <button class="border_btn" @click="downloadPublication = true">
             Download
           </button>
+        </div>
+      </div>
+      <div v-if="downloadPublication" class="messageBody">
+        <div class="messageContainer" @click="downloadPublication = true" @click.stop>
+          <div class="content">
+            <div class="delete-container">
+              <h2>You're about to download {{ capitalize(title) }}</h2>
+              <h6> {{ amount || 0 }} MATIC would be deducted from your wallet balance to complete this process</h6>
+              <h6> Would you like to proceed? </h6>
+              <br>
+              <div class="btn-flex">
+                <a
+                  target="_blank"
+                  :href="cid"
+                  class="saturn-btn"
+                  @click="
+                    downloadPublication = false;
+                  "
+                  @click.stop
+                >
+                  <span v-if="!loader1" class="text">
+                    Yes
+                  </span>
+                  <Loader v-else />
+                </a>
+                <button
+                  class="saturn-btn grey"
+                  @click="
+                    downloadPublication = false;
+                  "
+                  @click.stop
+                >
+                  <span class="text">
+                    No
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="rhs">
@@ -94,26 +131,48 @@ export default {
     return {
       switchData3: {
         state: 'OFF',
-        positiveText: 'Show All',
-        negativeText: 'Earnable'
+        positiveText: 'Premium',
+        negativeText: 'Free'
       },
       categories: [],
       category: '',
       data: [],
-      categorySet: []
+      categorySet: [],
+      loading: false,
+      downloadPublication: false,
+      loader1: false,
+      title: '',
+      amount: 0,
+      cid: ''
+    }
+  },
+  computed: {
+    watchSwitchState () {
+      return this.$store.state.switchState
+    }
+  },
+  watch: {
+    watchSwitchState () {
+      if (this.$store.state.switchState === 'ON') {
+        this.getAllPublications('premium')
+      } else {
+        this.getAllPublications('free')
+      }
     }
   },
   created () {
-    this.getAllPublications()
+    this.getAllPublications('free')
   },
   methods: {
     fullDate: functions.fullDate,
     capitalize: functions.capitalize,
     cutAddr: functions.cutAddr,
-    async getAllPublications () {
+    async getAllPublications (type) {
+      this.loading = true
       try {
-        const data = await this.$axios.get('/api/v1/publications/')
-        this.data = data.data.publications
+        const data = await this.$axios.get(`/api/v1/publications/?type=${type}`)
+        const publications = data.data.publications
+        this.data = publications
         const popular = {}
         this.data.map((y) => {
           y.categories.map((x) => {
@@ -123,6 +182,7 @@ export default {
           return y
         })
         this.sortCatgories(popular)
+        this.category = ''
       } catch (err) {
         if (
           err.message.includes(
@@ -135,21 +195,29 @@ export default {
           this.$toasted.error(err?.response?.data?.msg).goAway(5000)
         }
       }
+      this.loading = false
     },
     sortCatgories (obj) {
       const keys = Object.keys(obj)
-      // Start from the second element.
       for (let i = 1; i < keys.length; i++) {
         // Go through the elements behind it.
         for (let j = i - 1; j > -1; j--) {
           // value comparison using ascending order.
-          if (obj(keys[j + 1]) < obj(keys[j])) {
+          if (obj[keys[j + 1]] < obj[keys[j]]) {
             // swap
             [keys[j + 1], keys[j]] = [keys[j], keys[j + 1]]
           }
         }
       }
-      return keys
+      this.categorySet = keys.reverse().slice(0, 5)
+    },
+    showCategory (unit) {
+      const newData = this.data.filter(item => item.categories.includes(unit) === true)
+      this.data = newData
+    },
+    clearFilter () {
+      this.getAllPublications('free')
+      this.category = ''
     }
   }
 }
@@ -175,22 +243,27 @@ export default {
     font-weight: 500;
     font-size: 20px;
     line-height: 24px;
+    gap:2rem;
+    margin-top:-1rem;
 }
 .select_category{
     width: auto;;
 height: 3rem;
 background: #F4F6FE;
 }
-.category_flex{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    width: 100%;
-    grid-gap:1rem;
-}
-.category_flex select{
+.filter_flex select{
+  margin-top:2.2rem;
     border: 1px solid #0000003b;
     border-radius: 10px;
     padding: .5rem 1rem;
+    min-width:300px;
+    width:100%;
+}
+  select:focus {
+  outline: 1px solid #07124C;
+}
+.clear{
+  cursor:pointer
 }
 .category_flex div{
     margin-top:-1.2rem;
@@ -262,6 +335,9 @@ font-weight:bold;
   display:flex;
   justify-content:center;
   align-items: center;
+  gap:2rem;
+   max-width:70%;
+   flex-wrap:wrap;
 }
 .popular_categories{
   display:flex;

@@ -20,3 +20,238 @@
   background: #364489;
   color: rgb(215, 212, 212);
 }
+ .overlay-screen {
+  min-width: 100%;
+  min-height: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  background: rgba(0, 0, 0, 0.502);
+  z-index: 11;
+}
+.messageBody {
+  position: fixed;
+  top: 0;
+  left: -7%;
+  min-height: 100%;
+  min-width: 110%;
+  background: rgba(0, 0, 0, 0.801);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+.filterContainer {
+  border-radius: 20px;
+  border: 1px solid #e2e2ea;
+  max-width: auto;
+  max-height: 600px;
+  margin: auto auto;
+  background-color: white;
+  padding: 0;
+  padding-bottom: 40px;
+  overflow: scroll;
+  width: 100%;
+  overflow-x: hidden;
+}
+.filterHeader {
+  display: flex;
+  border-radius: 20px 20px 0 0;
+  justify-content: space-between;
+  width: 100%-30px;
+  background-color: #f0f2f4;
+  height: 78px;
+  font-size: 24.51px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-left: 30px;
+}
+.btn-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cancel {
+  margin-right: 30px;
+  height: 20px;
+  width: 20px;
+  border-radius: 5px;
+  background-color: #200e3263;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 11px;
+  border: none;
+}
+.cancel:hover {
+  background-color: white;
+  color: red;
+}
+.messageContainer {
+  border-radius: 20px;
+  border: 1px solid #e2e2ea;
+  max-width: auto;
+  max-height: 100%;
+  margin: auto auto;
+  background-color: white;
+  padding: 0;
+  padding-bottom: 40px;
+  overflow: scroll;
+  width: auto;
+  overflow-x: hidden;
+}
+.message-container {
+  padding: 10px 0px;
+  margin: 0 0px;
+  display: flex;
+  height: auto;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  overflow: auto;
+  width: 100%;
+}
+.message-form-grid {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  min-height: 60%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 0 0px;
+}
+.messageHeader {
+  display: flex;
+  border-radius: 20px 20px 0 0;
+  justify-content: space-between;
+  width: 100%-30px;
+  background-color: #f0f2f4;
+  height: 78px;
+  font-size: 24.51px;
+  align-items: center;
+  margin-bottom: 0px;
+  padding-left: 30px;
+}
+.btn-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+.messageCancel {
+  margin-right: 30px;
+  height: 20px;
+  width: 20px;
+  border-radius: 5px;
+  background-color: #200e3263;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 11px;
+  border: none;
+}
+.messageCancel:hover {
+  background-color: white;
+  color: red;
+}
+/* Send Message Modal*/
+.link {
+  text-decoration: none;
+  color: grey;
+}
+.delete-container {
+  padding: 10px 40px;
+  width: 450px;
+  margin-left: 50px;
+}
+.delete-container h2 {
+  padding-left: 0px;
+  padding-top: 40px;
+  padding-bottom: 30px;
+  text-align:center;
+  margin-left:-3rem;
+  color:#07124c;
+}
+.delete-container h6 {
+  padding-left: 0px;
+  padding-top: 0px;
+  padding-bottom: 15px;
+  text-align:center;
+  margin-left:-3rem;
+  color:#1e2235;
+  font-size: 15px;
+}
+.saturn-btn {
+  height: 50px;
+  border-radius: 20px;
+  padding: 10px;
+  border: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  min-width: 200px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  transition: 0.3s;
+  cursor: pointer;
+  margin-right: 20px;
+  
+  font-weight:bolder;
+
+  background-color: #3cda7d;
+}
+.saturn-btn:hover{
+color:#3cda7d;
+background-color: white;
+border: 3px solid #3cda7d;
+}
+.delete-container .red {
+  background-color: crimson;
+}
+.delete-container .red:hover{
+  background-color: white;
+  border: 3px solid crimson;
+  color: crimson;
+}
+.delete-container .grey {
+  border: 3px solid #07124c;
+  color: #07124c;
+  background-color: white;
+}
+.delete-container .grey:hover{
+  color: white;
+  background-color: #07124c;
+}
+.message-container {
+  max-height: 550px;
+  padding-top: 3rem;
+}
+.btn-flex {
+  margin-right: 30px;
+}
+.middle {
+  text-align: left;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  padding: 0 2px;
+  margin-right: 6px;
+  height: 32px;
+  width: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  margin: 0 15px;
+  background: rgb(204, 203, 203);
+  border: 1px solid rgb(138, 136, 136);
+}
+.error {
+  border: 1px solid red;
+  outline: red;
+}

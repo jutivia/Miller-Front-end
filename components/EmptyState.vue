@@ -3,7 +3,13 @@
     <div v-if="page === 'dashboard'" class="empty-state payments">
       <img class="reveals" src="~assets/images/empty-file.svg" alt="">
       <div class="text come-up">
-        You have no publications yet
+        There are no publications here
+      </div>
+    </div>
+    <div v-if="page === 'search'" class="empty-state payments">
+      <img class="reveals" src="~assets/images/empty-file.svg" alt="">
+      <div class="text come-up">
+        There are no publication titles that match your search word
       </div>
     </div>
   </div>

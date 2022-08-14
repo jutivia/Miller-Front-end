@@ -17,7 +17,7 @@
         <p class="p">
           Total Matic
         </p>
-        <span class="s"><img src="~assets/images/eye.png"> {{ amount }} MATIC</span>
+        <span class="s"> {{ amount }} MATIC</span>
       </div>
       <div>
         <p class="p">
@@ -157,20 +157,6 @@ export default {
       }
 
       this.$store.commit('checkConnected', this.showDetails)
-    },
-    loadLocalData () {
-      const foundData = localStorage.getItem('connectedData')
-      if (foundData) {
-        this.saveData = JSON.parse(foundData)
-        // console.log(this.saveData)
-        this.localData = true
-      } else {
-        this.localData = false
-      }
-    },
-    saveDataInLocalStorage () {
-      const dataToSave = JSON.stringify(this.saveData)
-      localStorage.setItem('connectedData', dataToSave)
     },
     cutAddr (addr) {
       const starter = addr.slice(0, 4)

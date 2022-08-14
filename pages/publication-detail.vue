@@ -1,5 +1,7 @@
 <template>
   <div class="container">
+    <div v-if="loading" class="overlay-screen" />
+    <FullScreenLoader v-if="loading" />
     <div class="lhs">
       <h4 class="big_text">
         {{ capitalize(data.title) || '-' }}
@@ -8,51 +10,13 @@
       <p class="small_text">
         {{ capitalize(data.description) || '-' }}
       </p>
-      <div class="graph_container">
-        <p>Location </p>
-        <img src="~assets/images/map.svg">
-      </div>
-    </div>
-    <div class="rhs">
-      <div class="right_flex">
-        <h4 class="big_text">
-          Views
-        </h4>
-        <h4 class="big_text">
-          Earnings
-        </h4>
-        <h4 class="big_text">
-          Date Uploaded
-        </h4>
-      </div>
-      <div class="right_flex">
-        <p class="small_text">
-          <img src="~assets/images/eye.png"> {{ data.views }}
-        </p>
-        <p class="small_text">
-          0.00 ℏ
-        </p>
-        <p class="small_text">
-          {{ fullDate( data.createdAt) }}
-        </p>
-      </div>
-      <br>
-      <div class="border_btn_flex">
-        <a class="border_btn" target="_blank" :href="data.cid">
-          Download
-        </a>
-        <div v-if="$store.state.userId === data.createdBy" class="border_btn delete" @click="deletePublication()">
-          <span v-if="!loader1"> Delete </span>
-          <Loader v-if="loader1" />
-        </div>
-      </div>
       <div class="comments_container">
         <div class="comment_header">
           Comments
         </div>
         <div class="comment_body">
           <div class="single_comment">
-            <div class="color red" />
+            <div class="color pink" />
             <div class="comment_text">
               We are also focused on supporting members of the DAO
             </div>
@@ -82,6 +46,108 @@
         </div>
       </div>
     </div>
+    <div class="rhs">
+      <div class="right_flex">
+        <h4 class="big_text">
+          Views
+        </h4>
+        <h4 v-if="$store.state.userId === data.createdBy" class="big_text">
+          Earnings
+        </h4>
+        <h4 class="big_text">
+          Date Uploaded
+        </h4>
+      </div>
+      <div class="right_flex">
+        <p class="small_text">
+          <img src="~assets/images/eye.png"> {{ data.views }}
+        </p>
+        <p v-if="$store.state.userId === data.createdBy" class="small_text">
+          0.00 matic
+        </p>
+        <p class="small_text">
+          {{ fullDate( data.createdAt) }}
+        </p>
+      </div>
+      <div class="border_btn_flex">
+        <div class="border_btn" @click="downloadPublication = true">
+          Download
+        </div>
+        <div v-if="$store.state.userId === data.createdBy" class="border_btn delete" @click="deletePublication = true">
+          <span> Delete </span>
+        </div>
+      </div>
+      <div v-if="downloadPublication" class="messageBody">
+        <div class="messageContainer" @click="downloadPublication = true" @click.stop>
+          <div class="content">
+            <div class="delete-container">
+              <h2>You're about to download {{ capitalize(data.title) }}</h2>
+              <h6> {{ data.amount || 0 }} MATIC would be deducted from your wallet balance to complete this process</h6>
+              <h6> Would you like to proceed? </h6>
+              <br>
+              <div class="btn-flex">
+                <a
+                  target="_blank"
+                  :href="data.cid"
+                  class="saturn-btn"
+                  @click="
+                    downloadPublication = false;
+                  "
+                  @click.stop
+                >
+                  <span v-if="!loader1" class="text">
+                    Yes
+                  </span>
+                  <Loader v-else />
+                </a>
+                <button
+                  class="saturn-btn grey"
+                  @click="
+                    downloadPublication = false;
+                  "
+                  @click.stop
+                >
+                  <span class="text">
+                    No
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="deletePublication" class="messageBody">
+        <div class="messageContainer" @click="deleteApartment = true" @click.stop>
+          <div class="content">
+            <div class="delete-container">
+              <h2>Do you want to delete this publication ?</h2>
+              <div class="btn-flex">
+                <button
+                  class="saturn-btn red"
+                  @click="
+                    deletePublication = false;
+                    deleteThisPublication();
+                    deletePublication = false;
+                  "
+                >
+                  <span v-if="!loader1" class="text">
+                    Yes
+                  </span>
+                  <Loader v-else />
+                </button>
+                <button
+                  class="saturn-btn grey"
+                  @click="deletePublication = false"
+                  @click.stop
+                >
+                  No
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -92,7 +158,10 @@ export default {
     return {
       data: {
       },
-      loader1: false
+      loader1: false,
+      loading: false,
+      deletePublication: false,
+      downloadPublication: false
     }
   },
   created () {
@@ -102,6 +171,7 @@ export default {
     fullDate: functions.fullDate,
     capitalize: functions.capitalize,
     async getSinlePublication () {
+      this.loading = true
       try {
         const data = await this.$axios.get(`/api/v1/publications/${this.$route.query.id}`)
         this.data = data.data.updatedCount
@@ -117,8 +187,9 @@ export default {
           this.$toasted.error(err?.response?.data?.msg).goAway(5000)
         }
       }
+      this.loading = false
     },
-    async deletePublication () {
+    async deleteThisPublication () {
       this.loader1 = true
       try {
         await this.$axios.delete(`/api/v1/publications/${this.$route.query.id}`)
@@ -173,8 +244,15 @@ line-height: 24px;
 color: #575757;
 }
 .right_flex{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    display: flex;
+    justify-content:space-around;
+    align-items:center;
+    margin-bottom: 1rem;
+}
+.two_grid_right_flex{
+   display: flex;
+    justify-content:space-around;
+    align-items:center;
     margin-bottom: 1rem;
 }
 .comments_container{
@@ -210,7 +288,7 @@ width: 30px;
 height: 30px;
 border-radius: 50%;
 }
-.red{
+.pink{
     background: #CF6DBB;
 }
 .green{

@@ -1,12 +1,14 @@
 <template>
   <div class="table">
     <h1> My Dashboard </h1>
+    <div v-if="loading" class="overlay-screen" />
+    <FullScreenLoader v-if="loading" />
     <SaturnTable
-      v-if="!empty"
+      v-if="!empty || !loading"
       :data="tableData"
       @action="rowSelected"
     />
-    <EmptyState v-else page="dashboard" />
+    <EmptyState v-if="empty" page="dashboard" />
   </div>
 </template>
 
@@ -49,7 +51,8 @@ export default {
         },
         searchBy: 'address'
       },
-      myPublications: []
+      myPublications: [],
+      loading: false
     }
   },
   created () {
@@ -58,6 +61,7 @@ export default {
   methods: {
     capitalize: functions.capitalize,
     async getPublications () {
+      this.loading = true
       try {
         const { data } = await this.$axios.get('/api/v1/publications/user')
         // console.log(data)
@@ -86,6 +90,7 @@ export default {
           this.$toasted.error(err?.response?.data?.msg).goAway(5000)
         }
       }
+      this.loading = false
     },
     rowSelected (label) {
       this.$router.push({

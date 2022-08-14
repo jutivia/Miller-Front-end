@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="showOptions = false">
     <div>
       <div class="hero">
         <div class="right_align">
@@ -7,7 +7,7 @@
           <br>
           <span class="pink_text">RESOURCES</span>
           <br>
-          <div class="btn-flex">
+          <div class="">
             <button class="btn margins">
               <span v-if="!connected"> Become a Creator </span>
               <span v-else @click="$router.push('/creator-dashboard')"> View Your Publications </span>
@@ -18,11 +18,23 @@
             </button>
           </div>
         </div>
-        <div class="left_align">
+        <div v-if="connected" class="left_align">
           Search for articles and<br>
           publications
           <div class="search-ctn">
-            <input type="search" placeholder="Search">
+            <div class="div_search">
+              <input v-model="key" type="search" placeholder="Search by title" @keyup.enter="search(key)">
+              <div v-if="showOptions" class="dropDown">
+                <div v-if="loading" class="loading">
+                  <Loader :color="color" :border-width="4" :size="40" />
+                </div>
+                <div v-for="option, i in data" v-else :key="i" class="option" @click="$router.push(`/publication-detail/?id=${option._id}`)">
+                  <span class="big_text">{{ capitalize(option.title) }}</span>
+                  <span class="small_text">{{ capitalize(option.description.slice(0,50)) }} {{ option.description.length> 20? '...' : '' }}</span>
+                </div>
+                <EmptyState v-if="!data.length && !loading" page="search" />
+              </div>
+            </div>
             <svg
               width="17"
               height="17"
@@ -37,7 +49,6 @@
                 fill="#1d293f"
               />
             </svg>
-          <!-- fill="#7C0FD1" -->
           </div>
         </div>
       </div>
@@ -87,9 +98,7 @@
       </div>
     </div>
     <footer>
-      <p>
-        About us  News  Careers  Help  Center
-      </p>
+      <p />
       <p>
         Copyright 2022
       </p>
@@ -98,15 +107,24 @@
 </template>
 
 <script>
+import functions from '~/utils/functions'
 export default {
   data () {
     return {
-      connected: this.$store.state.connected
+      connected: this.$store.state.connected,
+      key: '',
+      showOptions: false,
+      loading: false,
+      data: [],
+      color: '#07124c'
     }
   },
   computed: {
     checkConnected () {
       return this.$store.state.connected
+    },
+    checkSearch () {
+      return this.key
     }
   },
   watch: {
@@ -116,6 +134,36 @@ export default {
       } else {
         this.connected = false
       }
+    },
+    checkSearch () {
+      if (this.key.length === 0) { this.showOptions = false }
+    }
+  },
+  methods: {
+    capitalize: functions.capitalize,
+    async search (key) {
+      this.loading = true
+      this.showOptions = true
+      try {
+        const data = await this.$axios.get(`/api/v1/publications/?title=${key}`)
+        const publications = data.data.publications
+        if (publications.length) {
+          this.data = publications
+        }
+        this.data = publications
+      } catch (err) {
+        if (
+          err.message.includes(
+            "Cannot read properties of null (reading 'toLowerCase')"
+          ) ||
+            err.message.includes('Network')
+        ) {
+          this.$toasted.error('Check your connection.').goAway(5000)
+        } else {
+          this.$toasted.error(err?.response?.data?.msg).goAway(5000)
+        }
+      }
+      this.loading = false
     }
   }
 }
@@ -257,5 +305,57 @@ footer{
   margin-top:1rem;
   border: 1px solid #07124c;
 }
-
+.div_search{
+  width:100%;
+  display:flex;
+  align-items: center;
+  position:relative;
+}
+.dropDown{
+  position:absolute;
+  display:flex;
+  flex-direction:column;
+  background:white;
+  width:inherit;
+  padding:1rem 1rem;
+  z-index:10;
+  max-height:32rem;
+  overflow-y:scroll;
+  margin-top:2.5rem;
+  border: 1px solid #e2e2ea;
+  box-shadow: -1px 10px 15px rgba(117, 117, 158, 0.1);
+  border-radius: 10px;
+  min-height:1rem;
+  min-width: auto;
+  top:0;
+}
+.option{
+  color: #07124c;
+  background-color:rgba(187, 187, 187, 0.282);
+  padding:.5rem 2rem;
+  margin-bottom:.8rem;
+}
+.option:hover{
+  background-color: #172a89;
+  color: white;
+  border-radius: 10px;
+}
+.option .big_text{
+  font-size:18px;
+  display: block;
+}
+.option .small_text{
+  font-size:14px;
+  display: block;
+  color:rgb(94, 93, 93);
+  margin-top:-1rem;
+}
+.option:hover .small_text{
+  color:rgb(215, 210, 210);
+}
+.loading{
+  display:flex;
+  align-items: center;
+  justify-content:center;
+}
 </style>

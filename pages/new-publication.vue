@@ -1,5 +1,5 @@
 <template>
-  <div class="upload_container">
+  <div class="upload_container" @click="showOptions = false">
     <div class="main_container">
       <input id="" v-model="title" type="text" placeholder="Enter Title" class="text">
       <br>
@@ -11,6 +11,33 @@
         placeholder="Brief Description"
         class="text"
       />
+      <input
+        v-if="type=='premium'"
+        id=""
+        v-model="amount"
+        type="amount"
+        placeholder="Enter Amount In Matic"
+        class="text"
+      >
+      <div class="categories">
+        <span v-for="i,index in categories" :key="index" class="selected_categories">{{ i }} <img src="~/assets/images/delete.svg" style="curor:pointer" @click="categories.splice(index,1)"></span>
+        <div class="">
+          <input
+            id=""
+            v-model="item"
+            type="text"
+            placeholder="Enter Category"
+            class="category_text"
+            @click="showOptions = true"
+            @click.stop
+            @keyup="search(item.trim())"
+            @keyup.enter="categories.push(item); item=''; options= copyOptions"
+          >
+          <div v-if="showOptions" class="dropDown">
+            <span v-for="option, i in options" :key="i" class="option" @click="categories.push(option)"> {{ capitalize(option) }}</span>
+          </div>
+        </div>
+      </div>
       <div class="upload_grid">
         <div class="lhs">
           <p>Upload File</p>
@@ -54,15 +81,15 @@
           </p>
         </div>
         <div class="rhs">
-          <p>Select Category</p>
+          <p>Select Types</p>
           <div class="checkbox-container">
             <div class="checkbox">
               <label for="" class="label-name-2">
                 <input
                   id="text-field19"
-                  v-model="category"
+                  v-model="type"
                   type="radio"
-                  name="category"
+                  name="type"
                   value="premium"
                 >
                 <span>Premium</span>
@@ -72,17 +99,17 @@
               <label for="" class="label-name-2">
                 <input
                   id="text-field19"
-                  v-model="category"
+                  v-model="type"
                   type="radio"
-                  name="category"
+                  name="type"
                   value="free"
                 >
                 <span>Free</span>
               </label>
             </div>
           </div>
-          <p>Note  please note that you would not get any incentive on free category</p>
-          <button class="btn submit" :disabled="!title || !description || !selectedFiles.length || !category" @click="main()">
+          <p>Note  please note that you would not get any incentives on free types</p>
+          <button class="btn submit" :disabled="!title || !description || !selectedFiles.length || !type || !categories.length" @click="main()">
             <Loader v-if="loader" />
             <span v-else> Submit </span>
           </button>
@@ -93,21 +120,30 @@
 </template>
 
 <script>
-// import { Web3Storage } from 'web3.storage'
 import { create } from 'ipfs-http-client'
+import functions from '~/utils/functions'
 export default {
   data () {
     return {
       title: '',
       description: '',
-      category: '',
+      type: '',
       selectedFiles: [],
       loader: false,
       url: '',
-      loader1: false
+      loader1: false,
+      categories: [],
+      item: '',
+      options: [],
+      showOptions: false,
+      copyOptons: []
     }
   },
+  created () {
+    this.getAllCategories()
+  },
   methods: {
+    capitalize: functions.capitalize,
     resetFile (event) {
       event.target.value = ''
       // this.document1 = null
@@ -142,7 +178,10 @@ export default {
           title: this.title,
           description: this.description,
           cid: this.url,
-          category: this.category
+          type: this.type,
+          categories: this.categories,
+          userAddress: this.$store.state.userAddress,
+          amount: this.type === 'premium' ? this.amount : 0
         }
         const data = await this.$axios.post('/api/v1/publications', dataToSave)
         console.log(data)
@@ -161,6 +200,37 @@ export default {
         }
       }
       this.loader = false
+    },
+    async getAllCategories () {
+      const data = await this.$axios.get('/api/v1/publications/')
+      const publications = data.data.publications
+      this.data = publications
+      const popular = {}
+      this.data.map((y) => {
+        y.categories.map((x) => {
+          isNaN(popular[x]) === true ? popular[x] = 1 : popular[x] += 1
+          return x
+        })
+        return y
+      })
+      const keys = Object.keys(popular)
+      for (let i = 1; i < keys.length; i++) {
+        // Go through the elements behind it.
+        for (let j = i - 1; j > -1; j--) {
+          // value comparison using ascending order.
+          if (popular[keys[j + 1]] < popular[keys[j]]) {
+            // swap
+            [keys[j + 1], keys[j]] = [keys[j], keys[j + 1]]
+          }
+        }
+      }
+      this.options = keys
+      this.copyOptions = keys
+    },
+    search (word) {
+      this.showOptions = true
+      this.options = this.copyOptions.filter(x => x.includes(word))
+      if (this.options.length === 0) { this.showOptions = false }
     }
   }
 }
@@ -310,5 +380,68 @@ opacity:0;
 button:disabled{
   cursor:not-allowed;
   background-color:#364489;
+}
+.selected_categories, .category_text{
+  width:auto;
+  padding:7px 10px;
+  background:white;
+  border-radius:10px;
+  border: 3px dotted #07124c;
+  color:#07124c;
+  font-weight:bold;
+  max-height:auto;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  gap:7px;
+  min-height:3.5rem;
+  min-width:7rem;
+}
+.selected_categories img{
+  width:20px;
+  height:20px;
+}
+.category_text:focus{
+  /* outline:none; */
+}
+.categories{
+  display:flex;
+  justify-content:flex-start;
+  flex-wrap: wrap;
+  gap:1rem;
+  margin: 1rem 0 2rem 0;
+}
+.category_text{
+  position:relative;
+  padding: 10px 10px;
+  border: 3px solid #07124c;
+  min-width:20rem;
+}
+.dropDown{
+  position:absolute;
+  display:flex;
+  flex-direction:column;
+  background:white;
+  width:inherit;
+  padding:.7rem .5rem;
+  z-index:10;
+  max-height:10rem;
+  overflow-y:scroll;
+  margin-top:.1rem;
+  border: 1px solid #e2e2ea;
+  box-shadow: -1px 10px 15px rgba(117, 117, 158, 0.1);
+  border-radius: 10px;
+  min-height:1rem;
+  min-width: auto;
+}
+.option{
+  color: #07124c;
+  font-weight:bold;
+  padding:.5rem 2rem;
+}
+.option:hover{
+  background-color: #07124c;
+  color: white;
+  border-radius: 10px;
 }
 </style>
