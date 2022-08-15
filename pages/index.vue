@@ -60,7 +60,7 @@
     </div>
 
     <div class="main">
-      <h3 class="right_align_main what_you_get">
+      <h3 class="what_you_get">
         What You Get
       </h3>
       <section class="cards">
@@ -71,6 +71,7 @@
           </div>
           <div class="card__content">
             <h4>Discover A Borderless Community</h4>
+            <p>We are also focused on supporting members of the DAO which would in return be of a good cause, to the DAO community at large. Support include scholarships, grants and courses amongst others for members of the DAO</p>
             <p>We are also focused on supporting members of the DAO which would in return be of a good cause, to the DAO community at large. Support include scholarships, grants and courses amongst others for members of the DAO</p>
           </div>
         </article>
@@ -83,6 +84,7 @@
           <div class="card__content">
             <h4>Real Time Analytics</h4>
             <p>We are also focused on supporting members of the DAO which would in return be of a good cause, to the DAO community at large. Support include scholarships, grants and courses amongst others for members of the DAO</p>
+            <p>We are also focused on supporting members of the DAO which would in return be of a good cause, to the DAO community at large. Support include scholarships, grants and courses amongst others for members of the DAO</p>
           </div>
         </article>
         <!-- card 3 -->
@@ -93,6 +95,7 @@
           <div class="card__content">
             <h4>Earn Rewards For Reading</h4>
             <p>We are also focused on supporting members of the DAO which would in return be of a good cause, to the DAO community at large. Support include scholarships, grants and courses amongst others for members of the DAO</p>
+            <p>We are also focused on supporting members of the DAO which would in return be of a good cause, to the DAO community at large. Support include scholarships, grants and courses amongst others for members of the DAO</p>
           </div>
         </article>
         <!-- card 4 -->
@@ -102,6 +105,7 @@
           </div>
           <div class="card__content">
             <h4>Get Rewards For Your Publication </h4>
+            <p>We are also focused on supporting members of the DAO which would in return be of a good cause, to the DAO community at large. Support include scholarships, grants and courses amongst others for members of the DAO</p>
             <p>We are also focused on supporting members of the DAO which would in return be of a good cause, to the DAO community at large. Support include scholarships, grants and courses amongst others for members of the DAO</p>
           </div>
         </article>
@@ -146,7 +150,6 @@
       </div> -->
     </div>
     <footer>
-      <p />
       <p>
         &#169; {{ new Date().getFullYear() }} Miller
       </p>
@@ -239,7 +242,7 @@ export default {
   ), url("~assets/images/hero-illustration.png") no-repeat center
       center;
   width: 100%;
-  min-height: 100vh;
+  min-height: 90vh;
   background-size: cover;
   position: relative;
   inset: 0;
@@ -284,8 +287,11 @@ export default {
 }
 .what_you_get{
   text-align:center;
+   font-weight: 600;
+   font-size: 30px;
   color: var(--white);
   text-transform: uppercase;
+  margin-block: 5vh;
 }
 .cards{
   max-width: 1220px;
@@ -294,6 +300,7 @@ export default {
   gap: 2.5rem;
   grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
   margin-bottom: 1rem;
+  line-height: 1.5;
 }
 .card{
   background: var(--dark-grey);
@@ -310,7 +317,7 @@ font-size:clamp(1rem, 10vw, 2rem)
   border-bottom-right-radius: 0;
 }
 .card__content{
-  padding: 1rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
 }
 .right_align h1{
   font-size: clamp(2.5rem, 15vw, 4.5rem);
@@ -432,9 +439,11 @@ footer{
   height: 100px;
   width:100vw;
   display:flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content:flex-end;
   padding:3rem;
   margin-top: auto;
+  text-align: rignt;
   /* position: relative;
   bottom: 0; */
 }

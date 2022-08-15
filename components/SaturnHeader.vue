@@ -251,11 +251,11 @@ header {
   justify-content: space-between;
   /* padding: 0.813rem 2.313rem 0.75rem 1.563rem; */
   padding:  1rem 4.5rem;
-  background: rgba(0, 0, 0, 0.25);
+  background:rgba(5, 1, 55, 0.25);
   backdrop-filter: blur(2.5rem);
   -webkit-backdrop-filter: blur(2.5rem);
   height: 10vh;
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
@@ -268,7 +268,7 @@ header {
 
 .logo {
   flex: 3;
-  max-width: clamp(5rem, 7.5vw, 7.5rem);
+  max-width: clamp(5rem, 10vw, 10rem);
   cursor:pointer;
 }
 .logo img{
