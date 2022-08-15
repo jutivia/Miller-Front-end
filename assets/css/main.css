@@ -6,11 +6,11 @@
 :root{
 
   /* colors */
-  --dark-grey: hsl(0,0%,25%);
+  --dark-grey: hsla(0,0%,13%, 0.85);
   --grey: hsl(0,0%,40%);
   --light-grey: hsl(0,0%,50%);
   --faint-grey: hsl(0,0%,75%);
-  --black: rgb(24, 24, 25);
+  --black: hsla(240, 2%, 10%, 1);
   --white: hsl(0,0%,90%);
   --orange: hsl(24,100%,50%);
   --dark-orange: hsl(20,98%,45%);
@@ -36,7 +36,9 @@ img{
   display: block;
   max-width: 100%;
 }
-
+html, body{
+  max-width: 1440px;
+}
 body{
   background-color: var(--black);
   color: var(--faint-grey);

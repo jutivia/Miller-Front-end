@@ -1,14 +1,14 @@
 <template>
   <header class="header">
-    <!-- <div class="title" @click="$router.push('/')">
-      <img src="~assets/images/Miller.svg" alt="">
-    </div> -->
-    <h3 class="title" @click="$router.push('/')">
+    <div class="logo" @click="$router.push('/')">
+      <img src="~assets/images/MillerLogo.png" alt="">
+    </div>
+    <!-- <h3 class="title" @click="$router.push('/')">
       Miller
-    </h3>
+    </h3> -->
     <!-- Message icon -->
     <div v-if="!showDetails">
-      <button class="btn margins" @click="connect">
+      <button class="btn" @click="connect">
         Connect wallet
       </button>
     </div>
@@ -248,7 +248,9 @@ header {
   /* use this when main container is flex  -> flex: 1; */
   display: flex;
   align-items: center;
-  padding: 0.813rem 2.313rem 0.75rem 1.563rem;
+  justify-content: space-between;
+  /* padding: 0.813rem 2.313rem 0.75rem 1.563rem; */
+  padding:  1rem 4.5rem;
   background: rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(2.5rem);
   -webkit-backdrop-filter: blur(2.5rem);
@@ -264,23 +266,17 @@ header {
   display: none;
 }
 
-.title {
+.logo {
   flex: 3;
-  font-weight: 500;
-  font-size: 1rem;
-  line-height: 1.125rem;
-  /* color:#cf6dbb; */
-  color: var(--orange);
-  margin-left:2rem;
+  max-width: clamp(5rem, 7.5vw, 7.5rem);
   cursor:pointer;
 }
+.logo img{
+  max-width: 100%;
+}
 
-.margins{
-   /* width: 246px; */
-
+.btn{
   padding: .75rem 1.5rem;
-/* height: 56px; */
-margin-right:2.5rem;
 }
 .upload{
   margin-right:2.5rem;

@@ -63,7 +63,50 @@
       <h3 class="right_align_main what_you_get">
         What You Get
       </h3>
-      <div class="main_grid">
+      <section class="cards">
+        <!-- card 1 -->
+        <article class="card">
+          <div class="card__image">
+            <img src="~assets/images/img1.png" alt="">
+          </div>
+          <div class="card__content">
+            <h4>Discover A Borderless Community</h4>
+            <p>We are also focused on supporting members of the DAO which would in return be of a good cause, to the DAO community at large. Support include scholarships, grants and courses amongst others for members of the DAO</p>
+          </div>
+        </article>
+
+        <!-- card 2 -->
+        <article class="card">
+          <div class="card__image">
+            <img src="~assets/images/img2.png" alt="">
+          </div>
+          <div class="card__content">
+            <h4>Real Time Analytics</h4>
+            <p>We are also focused on supporting members of the DAO which would in return be of a good cause, to the DAO community at large. Support include scholarships, grants and courses amongst others for members of the DAO</p>
+          </div>
+        </article>
+        <!-- card 3 -->
+        <article class="card">
+          <div class="card__image">
+            <img src="~assets/images/img3.png" alt="">
+          </div>
+          <div class="card__content">
+            <h4>Earn Rewards For Reading</h4>
+            <p>We are also focused on supporting members of the DAO which would in return be of a good cause, to the DAO community at large. Support include scholarships, grants and courses amongst others for members of the DAO</p>
+          </div>
+        </article>
+        <!-- card 4 -->
+        <article class="card">
+          <div class="card__image">
+            <img src="~assets/images/img4.png" alt="">
+          </div>
+          <div class="card__content">
+            <h4>Get Rewards For Your Publication </h4>
+            <p>We are also focused on supporting members of the DAO which would in return be of a good cause, to the DAO community at large. Support include scholarships, grants and courses amongst others for members of the DAO</p>
+          </div>
+        </article>
+      </section>
+      <!-- <div class="main_grid">
         <img src="~assets/images/img1.png" alt="">
         <div class="main_text">
           <h3>
@@ -100,12 +143,12 @@
             We are also focused on supporting members of the DAO which would in return be of a good cause, to the DAO community at large. Support include scholarships, grants and courses amongst others for members of the DAO
           </p>
         </div>
-      </div>
+      </div> -->
     </div>
     <footer>
       <p />
       <p>
-        Copyright 2022
+        &#169; {{ new Date().getFullYear() }} Miller
       </p>
     </footer>
   </div>
@@ -180,8 +223,9 @@ export default {
   height: 100%;
   display: grid;
   grid-template-rows: auto 1fr auto;
-   margin: 0 auto;
+   margin-inline: auto;
    border: 2px solid green;
+   place-items: center;
 }
 
 .hero {
@@ -195,12 +239,13 @@ export default {
   ), url("~assets/images/hero-illustration.png") no-repeat center
       center;
   width: 100%;
-  min-height: 92vh;
+  min-height: 100vh;
   background-size: cover;
-  position: absolute;
+  position: relative;
   inset: 0;
   display: grid;
   align-items: center;
+  object-fit: cover;
 }
 
 .right_align {
@@ -241,6 +286,31 @@ export default {
   text-align:center;
   color: var(--white);
   text-transform: uppercase;
+}
+.cards{
+  max-width: 1220px;
+  margin: 0 auto;
+  display: grid;
+  gap: 2.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+  margin-bottom: 1rem;
+}
+.card{
+  background: var(--dark-grey);
+  color: var(--white);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.card h4{
+font-size:clamp(1rem, 10vw, 2rem)
+}
+.card img, .card{
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.card__content{
+  padding: 1rem;
 }
 .right_align h1{
   font-size: clamp(2.5rem, 15vw, 4.5rem);
@@ -320,8 +390,8 @@ input[type='search']:focus {
 }
 .main{
   padding:2rem;
-   position: relative;
-   top: 100vh;
+   /* position: relative; */
+   /* top: 100vh; */
   min-height: 100%;
 
 }
@@ -331,11 +401,11 @@ input[type='search']:focus {
   grid-gap: 4rem;
   margin-bottom:2rem;
 }
-.main_grid img{
+/* .main_grid img{
   width: 100%;
 height: 347px;
 border-radius: 9.37855px;
-}
+} */
 .main_text h3{
   /* color: #07124C; */
   color: var(--orange);
@@ -349,15 +419,24 @@ font-size: 24px;
 line-height: 29px;
 }
 footer{
-  background: #F4F6FE;
+  /* background: var(--dark-orange); */
+  background: linear-gradient(
+     to top left,
+    rgba(0, 0, 0, 0.25),
+    var(--black),
+    #5a67a6,
+    #4f2948
+  );
+  color: var(--white);
+  border-top: 1px solid var(--orange);
   height: 100px;
   width:100vw;
   display:flex;
   justify-content: space-between;
   padding:3rem;
   margin-top: auto;
-  position: relative;
-  bottom: 0;
+  /* position: relative;
+  bottom: 0; */
 }
 .inverted-colors{
   background: white;
