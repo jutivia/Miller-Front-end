@@ -8,8 +8,9 @@
       <FullScreenLoader v-if="loading" />
 
       <div class="lhs">
-        <h4 class="big_text">
-          {{ data.title? capitalize(data.title) : '-' }}
+        <h4 class="big_text header_flex">
+          <span> {{ data.title? capitalize(data.title) : '-' }} </span>
+          <span class="amount"> {{ data.amount }} Matic </span>
         </h4>
         <br>
         <p class="small_text">
@@ -52,27 +53,35 @@
         </div>
       </div>
       <div class="rhs">
-        <div class="right_flex">
-          <h4 class="big_text">
-            Downloads
-          </h4>
-          <h4 v-if="$store.state.userId === data.createdBy" class="big_text">
-            Earnings
-          </h4>
-          <h4 class="big_text">
-            Date Uploaded
-          </h4>
-        </div>
-        <div class="right_flex">
-          <p class="small_text download_flex">
-            <img src="~assets/images/download.svg"> {{ data.views }}
-          </p>
-          <p v-if="$store.state.userId === data.createdBy" class="small_text">
-            0.00 matic
-          </p>
-          <p class="small_text">
-            {{ data.createdAt? fullDate( data.createdAt): '-' }}
-          </p>
+        <div class="two_grid_right_flex">
+          <div class="text_flex">
+            <h4 class="big_text">
+              Downloads
+            </h4>
+            <p class="small_text download_flex">
+              {{ data.views }}
+            </p>
+          </div>
+          <div
+            v-if="$store.state.userId === data.createdBy && data.type==='premium'"
+            class="text_flex
+          "
+          >
+            <h4 class="big_text">
+              Earnings
+            </h4>
+            <p class="small_text">
+              {{ data.earnings? data.earnings.toFixed(4): 0.00 }} matic
+            </p>
+          </div>
+          <div class="text_flex">
+            <h4 class="big_text">
+              Date Uploaded
+            </h4>
+            <p class="small_text">
+              {{ data.createdAt? fullDate( data.createdAt): '-' }}
+            </p>
+          </div>
         </div>
         <div class="border_btn_flex">
           <div class="border_btn" @click="downloadPublication = true">
@@ -155,7 +164,15 @@
 </template>
 
 <script>
+import { Contract, ethers } from 'ethers'
+import Web3Modal from 'web3modal'
+import CoinbaseWalletSDK from '@coinbase/wallet-sdk'
+import WalletConnectProvider from '@walletconnect/web3-provider'
+import ABI from '~/utils/Miller.json'
 import functions from '~/utils/functions'
+import MetaMaskLogo from '~/assets/metamask.svg'
+
+const DOWContract = '0x840C2b073029960681c657a7E3168e55C32e74e8'
 export default {
   data () {
     return {
@@ -166,15 +183,77 @@ export default {
       deletePublication: false,
       downloadPublication: false,
       downloadLoder: false,
-      backBtn: 'All Publications'
+      backBtn: 'All Publications',
+      provider: ''
     }
   },
   created () {
     this.getSinlePublication()
+    this.getProvider()
   },
   methods: {
     fullDate: functions.fullDate,
     capitalize: functions.capitalize,
+    async getProvider () {
+      const providerOptions = {
+        injected: {
+          display: {
+            logo: MetaMaskLogo,
+            type: 'injected',
+            check: 'isMetaMask',
+            description: 'Connect to your MetaMask Wallet'
+          },
+          package: true
+        },
+        walletconnect: {
+          package: WalletConnectProvider,
+          options: {
+            alchemyId: process.env.VUE_APP_ALCHEMY_KEY,
+            rpc: {
+              80001: process.env.VUE_APP_MUMBAI_RPC_URL
+            }
+          },
+          qrcode: true,
+          qrcodeModalOptions: {
+            mobileLinks: [
+              'metamask',
+              'trust',
+              'rainbow',
+              'argent',
+              'imtoken',
+              'pillar'
+            ]
+          }
+        },
+        //* **Coinbase Wallet***//
+        coinbasewallet: {
+          package: CoinbaseWalletSDK,
+          options: {
+            appName: 'Miller',
+            alchemyId: process.env.VUE_APP_ALCHEMY_KEY,
+            rpc: process.env.VUE_APP_MUMBAI_RPC_URL,
+            chainId: 80001,
+            darkMode: true
+          }
+        }
+      }
+      const newWeb3Modal = new Web3Modal({
+        disableInjectedProvider: false,
+        displayNoInjectedProvider: false,
+        theme: {
+          background: 'rgb(20,30,30, 0.65)',
+          main: 'rgb(199, 199, 199)',
+          secondary: 'rgb(136, 136, 136)',
+          border: 'rgba(40, 240, 5, 0.05)',
+          hover: 'rgb(16, 45, 35, 0.9)'
+        },
+        network: 'matic',
+        cacheProvider: true, // optional
+        providerOptions // required
+      })
+      const instance = await newWeb3Modal.connect()
+      this.provider = new ethers.providers.Web3Provider(instance)
+    },
     async getSinlePublication () {
       this.loading = true
       try {
@@ -189,7 +268,7 @@ export default {
         ) {
           this.$toasted.error('Check your connection.').goAway(5000)
         } else {
-          this.$toasted.error(err?.response?.data?.msg).goAway(5000)
+          this.$toasted.error(err?.response?.data?.msg || 'Connection Failed').goAway(5000)
         }
       }
       this.loading = false
@@ -209,7 +288,7 @@ export default {
         ) {
           this.$toasted.error('Check your connection.').goAway(5000)
         } else {
-          this.$toasted.error(err?.response?.data?.msg).goAway(5000)
+          this.$toasted.error(err?.response?.data?.msg || 'Connection Failed').goAway(5000)
         }
       }
       this.loader1 = false
@@ -217,11 +296,31 @@ export default {
     async download () {
       this.downloadLoder = true
       try {
-        const data = await this.$axios.get(`/api/v1/publications/cid/${this.data._id}`)
-        this.cid = data.data.updatedCount.cid
-        window.open(this.cid, '_blank').focus()
-        this.downloadPublication = false
+        if (this.data.type === 'premium') {
+          const amount = ethers.utils.parseUnits(
+            this.data.amount.toString(),
+            18
+          )
+          const signer = this.provider.getSigner()
+          const contractInstance = new Contract(DOWContract, ABI, signer)
+          await contractInstance.payToCreator(amount, this.data.userAddress, { value: amount })
+          const data = await this.$axios.get(`/api/v1/publications/cid/${this.data._id}`)
+          console.log(data)
+          this.cid = data.data.updatedCount.cid
+          window.open(this.cid, '_blank')
+          this.downloadLoder = false
+          this.downloadPublication = false
+          this.getSinlePublication()
+        } else {
+          const data = await this.$axios.get(`/api/v1/publications/cid/${this.data._id}`)
+          this.cid = data.data.updatedCount.cid
+          window.open(this.cid, '_blank').focus()
+          this.downloadLoder = false
+          this.downloadPublication = false
+          this.getSinlePublication()
+        }
       } catch (err) {
+        console.log(err)
         if (
           err.message.includes(
             "Cannot read properties of null (reading 'toLowerCase')"
@@ -230,7 +329,7 @@ export default {
         ) {
           this.$toasted.error('Check your connection.').goAway(5000)
         } else {
-          this.$toasted.error(err?.response?.data?.msg).goAway(5000)
+          this.$toasted.error(err?.response?.data?.msg || 'Connection Failed').goAway(5000)
         }
       }
       this.downloadLoder = false
@@ -268,12 +367,6 @@ font-weight: 500;
 font-size: 18px;
 line-height: 24px;
 color: #575757;
-}
-.right_flex{
-    display: flex;
-    justify-content:space-around;
-    align-items:center;
-    margin-bottom: 1rem;
 }
 .two_grid_right_flex{
    display: flex;
@@ -366,5 +459,33 @@ justify-content: center;
 .small_text img{
   width:40px;
   height:40px;
+}
+.header_flex{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:1rem;
+}
+.amount{
+   min-width:max-content;
+  padding:8px 10px;
+  background:#3cda7ec1;
+  border-radius:10px;
+  border: 1px solid #09d12b33;
+  color:#ffffff;
+  font-weight:bold;
+  max-height:auto;
+  text-align:center;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  font-size:14px;
+  line-height:1;
+  margin-right:2rem;
+}
+.text_flex{
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+  justify-content:center;
+  align-items:center;
 }
 </style>

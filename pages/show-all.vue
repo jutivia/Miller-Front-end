@@ -15,7 +15,7 @@
               Select category
             </option>
             <option
-              v-for="(unit, index) in categorySet"
+              v-for="(unit, index) in categories"
               :key="index"
               :value="unit"
             >
@@ -63,46 +63,6 @@
         <div class="options_flex">
           <span class="big_text">{{ item.category === 'free'? 'Free' : 'Premium' }} </span>
           <span class="small_text green">{{ item.category === 'free'? '0 MATIC' : `${item.amount} Matic` }} </span>
-          <div @click="downloadPublication = true">
-            <img src="~assets/images/download.svg">
-          </div>
-        </div>
-      </div>
-      <div v-if="downloadPublication" class="messageBody">
-        <div class="messageContainer" @click="downloadPublication = true" @click.stop>
-          <div class="content">
-            <div class="delete-container">
-              <h2>You're about to download {{ capitalize(title) }}</h2>
-              <h6> {{ amount || 0 }} MATIC would be deducted from your wallet balance to complete this process</h6>
-              <h6> Would you like to proceed? </h6>
-              <br>
-              <div class="btn-flex">
-                <button
-                  class="saturn-btn"
-                  @click="
-                    download();
-                  "
-                  @click.stop
-                >
-                  <span v-if="!downloadLoder" class="text">
-                    Yes
-                  </span>
-                  <Loader v-else />
-                </button>
-                <button
-                  class="saturn-btn grey"
-                  @click="
-                    downloadPublication = false;
-                  "
-                  @click.stop
-                >
-                  <span class="text">
-                    No
-                  </span>
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       <div class="rhs">
@@ -160,15 +120,15 @@ export default {
   },
   watch: {
     watchSwitchState () {
-      if (this.$store.state.switchState === 'ON') {
-        this.getAllPublications('premium')
-      } else {
+      if (this.$store.state.switchState === 'OFF') {
         this.getAllPublications('free')
+      } else {
+        this.getAllPublications('premium')
       }
     }
   },
   created () {
-    this.getAllPublications('free')
+    this.$store.state.switchState ? this.$store.state.switchState === 'OFF' ? this.getAllPublications('free') : this.getAllPublications('premium') : this.getAllPublications('free')
   },
   methods: {
     fullDate: functions.fullDate,
@@ -199,7 +159,7 @@ export default {
         ) {
           this.$toasted.error('Check your connection.').goAway(5000)
         } else {
-          this.$toasted.error(err?.response?.data?.msg).goAway(5000)
+          this.$toasted.error(err?.response?.data?.msg || 'Connection Failed').goAway(5000)
         }
       }
       this.loading = false
@@ -217,13 +177,14 @@ export default {
         }
       }
       this.categorySet = keys.reverse().slice(0, 5)
+      this.categories = keys.reverse()
     },
     showCategory (unit) {
       const newData = this.data.filter(item => item.categories.includes(unit) === true)
       this.data = newData
     },
     clearFilter () {
-      this.getAllPublications('free')
+      this.$store.state.switchState ? this.$store.state.switchState === 'OFF' ? this.getAllPublications('free') : this.getAllPublications('premium') : this.getAllPublications('free')
       this.category = ''
     },
     async download () {
@@ -242,7 +203,7 @@ export default {
         ) {
           this.$toasted.error('Check your connection.').goAway(5000)
         } else {
-          this.$toasted.error(err?.response?.data?.msg).goAway(5000)
+          this.$toasted.error(err?.response?.data?.msg || 'Connection Failed').goAway(5000)
         }
       }
       this.downloadLoder = false
@@ -404,8 +365,19 @@ font-weight:bold;
   font-weight:bolder;
 }
 .green{
-  color:#3cda7d;
-  font-weight: bolder;
+   min-width:max-content;
+  padding:8px 10px;
+  background:#3cda7ec1;
+  border-radius:10px;
+  border: 1px solid #09d12b33;
+  color:#ffffff;
+  font-weight:bold;
+  max-height:auto;
+  text-align:center;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  font-size:14px;
+  line-height:1;
+  /* margin-right:2rem; */
 }
 .download_flex{
   display:flex;

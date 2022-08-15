@@ -160,7 +160,7 @@ export default {
         ) {
           this.$toasted.error('Check your connection.').goAway(5000)
         } else {
-          this.$toasted.error(err?.response?.data?.msg).goAway(5000)
+          this.$toasted.error(err?.response?.data?.msg || 'Connection Failed').goAway(5000)
         }
       }
       this.loading = false

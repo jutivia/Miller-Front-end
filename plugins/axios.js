@@ -20,6 +20,9 @@ export default function ({ $axios, store }) {
 
   $axios.onRequest((_config) => {
     // console.log(store.state.token)
-    $axios.setHeader('Authorization', `Bearer ${store.state.token}`)
+    $axios.setHeader(
+      'Authorization',
+      `Bearer ${store.state.token}`
+    )
   })
 }

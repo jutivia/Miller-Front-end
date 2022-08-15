@@ -22,13 +22,18 @@ export default {
   },
   data () {
     return {
-      state: this.data.state,
+      state: this.$store.state.switchState,
       userActiveOnScreen: false
     }
   },
   computed: {
     detailsSwitchNoted () {
-      return this.$store.state.detailsSwitchNoted
+      return this.$store.state.switchState
+    }
+  },
+  watch: {
+    detailsSwitchNoted () {
+      this.state = this.$store.state.switchState
     }
   },
   created () {
@@ -38,8 +43,9 @@ export default {
   },
   methods: {
     event (state) {
-      this.state = state
       this.$store.commit('setSwitchState', state)
+      console.log(this.$store.state.switchState)
+      this.state = state
     }
     // catchOnScrollEventOnWindows () {
     //   window.addEventListener('scroll', () => {
