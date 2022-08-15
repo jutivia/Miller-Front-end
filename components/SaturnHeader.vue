@@ -1,5 +1,8 @@
 <template>
-  <header>
+  <header class="header">
+    <!-- <div class="title" @click="$router.push('/')">
+      <img src="~assets/images/Miller.svg" alt="">
+    </div> -->
     <h3 class="title" @click="$router.push('/')">
       Miller
     </h3>
@@ -16,13 +19,13 @@
       <button class="btn margins" @click="$router.push('/new-publication')">
         Upload Publication
       </button>
-      <div>
+      <div class="user-info">
         <p class="p">
           Total Matic
         </p>
         <span class="s"> {{ amount }} MATIC</span>
       </div>
-      <div>
+      <div class="user-info">
         <p class="p">
           Account ID
         </p>
@@ -48,7 +51,8 @@ export default {
       amount: '00.00',
       chainId: 8001,
       provider: null,
-      chainIsChanged: false
+      chainIsChanged: false,
+      lastScrollTop: 0
     }
   },
   computed: {
@@ -62,6 +66,9 @@ export default {
       })
       return this.chainId
     }
+    // scrollListener () {
+    //   return this.lastScrollTop
+    // }
   },
   watch: {
     checkConnected () {
@@ -90,6 +97,12 @@ export default {
   created () {
     this.showDetails = false
     // this.loadLocalData()
+  },
+  mounted () {
+    window.addEventListener('scroll', this.scrollListener)
+  },
+  beforeDestroy () {
+    window.removeEventListener('scroll', this.scrollListener)
   },
   methods: {
     async connect () {
@@ -203,9 +216,23 @@ export default {
         }
         this.showDetails = false
       }
+    },
+    scrollListener () {
+      if (typeof window !== 'undefined' && window.document) {
+        const scrollTop = document.scrollY || document.documentElement.scrollTop
+        if (scrollTop > lastScrollTop) {
+          document.querySelector('.header').style.top = '-30%'
+        } else {
+          document.querySelector('.header').style.top = '0'
+        }
+        this.lastScrollTop = scrollTop
+      }
     }
   }
 }
+
+let lastScrollTop
+
 </script>
 
 <style scoped>
@@ -222,12 +249,15 @@ header {
   display: flex;
   align-items: center;
   padding: 0.813rem 2.313rem 0.75rem 1.563rem;
-  background: rgba(255, 255, 255, 0.951);
-  box-shadow: inset 0px -1px 0px #e2e2ea;
-  /* border: 1px solid red; */
-  background: var(--navy-blue);
-  color: var(--faint-grey);
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(2.5rem);
+  -webkit-backdrop-filter: blur(2.5rem);
   height: 10vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
 }
 
 .show-menu {
@@ -246,8 +276,10 @@ header {
 }
 
 .margins{
-   width: 246px;
-height: 56px;
+   /* width: 246px; */
+
+  padding: .75rem 1.5rem;
+/* height: 56px; */
 margin-right:2.5rem;
 }
 .upload{
@@ -262,18 +294,34 @@ margin-right:2.5rem;
   font-style: normal;
 font-weight: 600;
 font-size: 20px;
-color: #07124C;
+color: var(--white)
 }
 .s{
   font-weight: 500;
 font-size: 16px;
-color: #575757;
+color: #50D37D;
+/* color: var(--orange); */
 }
 .myPublications{
   background-color:transparent;
-  color: #07124C;
+  color: var(--white);
+  font-weight: 700;
   width: max-content;
-  font-weight:700;
   padding: 5px;
+  line-height: 2;
+    /* border: 2px solid red; */
 }
+  .myPublications::after {
+    content: "";
+    display: block;
+    width: 0;
+    margin-inline: auto;
+    height: 3px;
+    background-color: var(--orange);
+    transition: 0.35s ease-out;
+  }
+
+  .myPublications:hover::after {
+    width: 100%;
+  }
 </style>

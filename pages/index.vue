@@ -1,12 +1,15 @@
-<template>
+<template class="index-container">
   <div @click="showOptions = false">
     <div>
       <div class="hero">
+        <!-- <div class="lady-illustration">
+          <img src="~assets/images/fileSavingBlack.png" alt="">
+        </div> -->
         <div class="right_align">
           <h1>YOUR ACCESS TO</h1>
-          <h1> UNLIMITED</h1>
-          <h1 class="pink_text">
-            RESOURCES
+          <h1>
+            <span>UNLIMITED</span>
+            <span class="pink_text">RESOURCES</span>
           </h1>
           <div class="">
             <!-- <br> -->
@@ -19,8 +22,10 @@
           </div>
         </div>
         <div v-if="connected" class="left_align">
-          Search for articles and<br>
-          publications
+          <h3>
+            Search for articles and<br>
+            publications
+          </h3>
           <div class="search-ctn">
             <div class="div_search">
               <input v-model="key" type="search" placeholder="Search by title" @keyup.enter="search(key)">
@@ -55,7 +60,7 @@
     </div>
 
     <div class="main">
-      <h3 class="right_align_main">
+      <h3 class="right_align_main what_you_get">
         What You Get
       </h3>
       <div class="main_grid">
@@ -170,12 +175,34 @@ export default {
 </script>
 
 <style scoped>
+.index-container {
+  min-height: 100vh;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+   margin: 0 auto;
+   border: 2px solid green;
+}
 
 .hero {
-  background-image: url("~assets/images/Miller_mainPic.png");
+    background: linear-gradient(
+    to bottom right,
+    rgba(5, 1, 55, 0.95),
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.8),
+    rgba(0, 0, 0, 0.85),
+    rgba(5, 1, 55, 0.95)
+  ), url("~assets/images/hero-illustration.png") no-repeat center
+      center;
   width: 100%;
-  height: 90vh;
+  min-height: 92vh;
+  background-size: cover;
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-items: center;
 }
+
 .right_align {
   padding-top: 7rem;
   padding-left: 5rem;
@@ -189,7 +216,8 @@ export default {
 .right_align_main{
    text-align: right;
    padding-right: 4rem;
-   color: #07124C;
+   /* color: #07124C; */
+   color: var(--orange);
    font-weight: 600;
    font-size: 30px;
    line-height: 44px;
@@ -209,22 +237,31 @@ export default {
   justify-content: flex-end;
   flex-direction:column;
 }
+.what_you_get{
+  text-align:center;
+  color: var(--white);
+  text-transform: uppercase;
+}
+.right_align h1{
+  font-size: clamp(2.5rem, 15vw, 4.5rem);
+}
 .right_align .pink_text {
   color: #cf6dbb;
   background: linear-gradient(
-    white 5%,
-    #5a67a6 25%,
-    #cf6dbb 70%
+     to top left,
+    white,
+    #5a67a6,
+    #cf6dbb
   );
    background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-size: 8rem;
-  line-height:.9;
+  font-size: clamp(2.5rem, 15vw, 4.5rem);
+  line-height:1;
 }
 .margins{
     margin-top: 4rem;
-    width: 313px;
-  height: 72px;
+    /* width: 313px; */
+  /* height: 72px; */
 }
 .search-ctn {
     margin-top:3rem;
@@ -283,6 +320,10 @@ input[type='search']:focus {
 }
 .main{
   padding:2rem;
+   position: relative;
+   top: 100vh;
+  min-height: 100%;
+
 }
 .main_grid{
   display:grid;
@@ -296,7 +337,8 @@ height: 347px;
 border-radius: 9.37855px;
 }
 .main_text h3{
-  color: #07124C;
+  /* color: #07124C; */
+  color: var(--orange);
   font-weight: 500;
   font-size: 36px;
   margin-bottom: 1rem;
@@ -313,6 +355,9 @@ footer{
   display:flex;
   justify-content: space-between;
   padding:3rem;
+  margin-top: auto;
+  position: relative;
+  bottom: 0;
 }
 .inverted-colors{
   background: white;
