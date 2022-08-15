@@ -5,6 +5,7 @@
     </div>
     <div class="table">
       <h1> Dashboard </h1>
+      <br>
       <div v-if="loading" class="overlay-screen" />
       <FullScreenLoader v-if="loading" />
       <SaturnTable

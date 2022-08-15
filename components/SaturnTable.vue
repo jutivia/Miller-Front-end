@@ -220,8 +220,8 @@ export default {
     formatDate (dateString) {
       const date = new Date(dateString)
       const dayString = `${this.months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`
-      const timeString = date.toLocaleTimeString()
-      return `${dayString},  ${timeString}`
+      // const timeString = date.toLocaleTimeString()
+      return `${dayString}`
     },
     formatCurrency (num) {
       return '₦' + num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
@@ -357,9 +357,10 @@ export default {
 .clear-btn {
   width: 100%;
   text-align: left;
-  border: none;
+  /* border: 1px solid black; */
   background: transparent;
   cursor: pointer;
+  border: none;
 }
 
 .pagination-bulk {
@@ -458,22 +459,23 @@ button .count {
 }
 .saturn-table-ctn {
   /* border: 1px solid #E2E2EA; */
-  border-radius: 20px;
+  border-radius: 5px;
   padding: 0;
   width:auto;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 .table {
   margin: 0 0;
   border-spacing: 0px;
   overflow-x: scroll;
-  background: rgba(209, 209, 209, 0.727);
+  background: rgba(255, 255, 255, 0.727);
 }
 .space {
   padding: 0 8px;
 }
 .saturn-table-wrapper {
   overflow-x: scroll;
-  border-radius: 20px;
+  border-radius: 5px;
 }
 .full-width {
   width: 100%;
@@ -486,14 +488,14 @@ button .count {
 }
 .table-row:nth-of-type(odd) {
   text-align: left;
-  background: #f1f1f1;
+  background: #ffffff;
   font-size: 16px;
   line-height: 18px;
   border-radius: 10px;
 }
 .table-row:nth-of-type(even) {
   text-align: left;
-  background: #b19f9f;
+  background: #e7e7e9;
   font-size: 16px;
   line-height: 18px;
   border-radius: 10px;

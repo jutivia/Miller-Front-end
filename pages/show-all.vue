@@ -11,7 +11,7 @@
         <br>
         <div class="filter_flex">
           <select v-model="category" placeholder="Filter Category" required class="select_category" @change="showCategory(category)">
-            <option value="" selected>
+            <option value="" selected disabled>
               Select category
             </option>
             <option
@@ -102,6 +102,7 @@ export default {
       categories: [],
       category: '',
       data: [],
+      copyData: [],
       categorySet: [],
       loading: false,
       downloadPublication: false,
@@ -140,6 +141,7 @@ export default {
         const data = await this.$axios.get(`/api/v1/publications/?type=${type}`)
         const publications = data.data.publications
         this.data = publications
+        this.copyData = publications
         const popular = {}
         this.data.map((y) => {
           y.categories.map((x) => {
@@ -180,11 +182,11 @@ export default {
       this.categories = keys.reverse()
     },
     showCategory (unit) {
-      const newData = this.data.filter(item => item.categories.includes(unit) === true)
+      const newData = this.copyData.filter(item => item.categories.includes(unit) === true)
       this.data = newData
     },
     clearFilter () {
-      this.$store.state.switchState ? this.$store.state.switchState === 'OFF' ? this.getAllPublications('free') : this.getAllPublications('premium') : this.getAllPublications('free')
+      this.data = this.copyData
       this.category = ''
     },
     async download () {

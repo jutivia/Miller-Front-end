@@ -1,8 +1,8 @@
 <template>
   <header>
-    <h3 class="title" @click="$router.push('/')">
-      Miller
-    </h3>
+    <div class="title" @click="$router.push('/')">
+      <img src="~/assets/images/Miller-logo-2.svg">
+    </div>
     <!-- Message icon -->
     <div v-if="!showDetails">
       <button class="btn margins" @click="connect">
@@ -235,10 +235,13 @@ header {
   /* use this when main container is flex  -> flex: 1; */
   display: flex;
   align-items: center;
+  justify-content:space-between;
   padding: 0.813rem 2.313rem 0.75rem 1.563rem;
   background: rgba(255, 255, 255, 0.951);
   box-shadow: inset 0px -1px 0px #e2e2ea;
   height:5rem;
+  gap:2rem;
+  width:100%;
 }
 
 .show-menu {
@@ -246,22 +249,21 @@ header {
 }
 
 .title {
-  flex: 3;
-  font-weight: 500;
-  font-size: 1rem;
-  line-height: 1.125rem;
-  color:#cf6dbb;
+  width:20%;
   margin-left:2rem;
   cursor:pointer;
 }
-
+.title img{
+  margin-top:0;
+  margin-left:0rem;
+}
 .margins{
    width: 246px;
 height: 56px;
-margin-right:2.5rem;
+margin-right:0;
 }
 .upload{
-  margin-right:2.5rem;
+  margin-right:0rem;
   width:auto;
   min-width:50rem;
   display:flex;
