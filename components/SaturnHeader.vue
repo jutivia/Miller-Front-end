@@ -220,7 +220,7 @@ export default {
     scrollListener () {
       if (typeof window !== 'undefined' && window.document) {
         const scrollTop = document.scrollY || document.documentElement.scrollTop
-        if (scrollTop > lastScrollTop) {
+        if (scrollTop > this.lastScrollTop) {
           document.querySelector('.header').style.top = '-30%'
         } else {
           document.querySelector('.header').style.top = '0'
@@ -230,8 +230,6 @@ export default {
     }
   }
 }
-
-let lastScrollTop
 
 </script>
 
@@ -260,6 +258,7 @@ header {
   left: 0;
   right: 0;
   z-index: 50;
+  transition: all 0.35s ease-in-out;
 }
 
 .show-menu {

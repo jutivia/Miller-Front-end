@@ -246,10 +246,12 @@ export default {
 
 <style  scoped>
 .upload_container{
-    background: #F4F6FE;
+    background: var(--dark-grey);
     border-radius: 10px;
     margin: 3rem 4.5rem;
     padding:3rem 0;
+      color: var(--faint-grey);
+  font-family: var(--jost);
 }
 .main_container{
 margin:1rem 20%;
@@ -257,21 +259,23 @@ width:60%;
 }
 .text{
 width:100%;
-background: #FFFFFF;
+background: var(--dark-grey);
 border-radius: 10px;
 border:none;
 padding:1.5rem;
 font-weight: 500;
 font-size: 24px;
 margin-bottom: 2rem;
-font-family: 'Montserrat';
-/* border: .5px solid #07124c; */
-box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+  color: var(--faint-grey);
+  font-family: var(--jost);
+border: .5px solid var(--light-grey);
+/* box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset; */
 /* color:grey; */
 }
 .text:focus{
   outline:none;
-  background-color:rgba(255, 255, 255, 0.5);
+  /* background-color:rgba(255, 255, 255, 0.5); */
+  background-color: var(--tinted-black);
 }
 .upload_grid{
     display: grid;
@@ -282,7 +286,8 @@ box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -
     display: flex;
 }
 .file_type_container{
-    background: rgba(214, 221, 246, 0.58);
+    /* background: rgba(214, 221, 246, 0.58); */
+    background: var(--dark-grey);
 border-radius: 5.89041px;
 padding:.5rem;
 width:auto;
@@ -398,10 +403,13 @@ button:disabled{
 .selected_categories, .category_text{
   width:auto;
   padding:10px 10px;
-  background:white;
+  /* background:white; */
+    background: var(--dark-grey);
   border-radius:10px;
-  border: 1px solid #07124c33;
-  color:#07124c;
+  /* border: 1px solid #07124c33; */
+border: .5px solid var(--light-grey);
+  /* color:#07124c; */
+  color: var(--faint-grey);
   font-weight:bold;
   max-height:auto;
   display:flex;
@@ -433,13 +441,17 @@ button:disabled{
   border:none;
   min-width:100%;
   padding-left:1rem;
-  box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
-  font-family: 'Montserrat';
-  font-size: 24px;
+  /* box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset; */
+  color: var(--faint-grey);
+  font-family: var(--jost);
+font-size: 24px;
+border: .5px solid var(--light-grey);
+/* border: .5px solid red; */
   font-weight:normal;
 }
 .category_text:focus{
   outline:none;
+  background: var(--tinted-black);
 }
 .dropDown{
   position:absolute;

@@ -11,6 +11,7 @@
   --light-grey: hsl(0,0%,50%);
   --faint-grey: hsl(0,0%,75%);
   --black: hsla(240, 2%, 10%, 1);
+  --tinted-black: hsla(240, 2%, 10%, 0.25);
   --white: hsl(0,0%,90%);
   --orange: hsl(24,100%,50%);
   --dark-orange: hsl(20,98%,45%);

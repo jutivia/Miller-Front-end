@@ -54,9 +54,6 @@
         <br>
         <p
           class="small_text"
-          style="color: #575757;font-weight: 500;
-        font-size: 18px;
-        line-height: 34px;"
         >
           {{ capitalize(item.description.slice(0,100)) }} {{ item.description.length> 20? '...' : '' }}
         </p>
@@ -360,26 +357,21 @@ color: var(--orange);
     margin-bottom:1rem;
 }
 .small_text{
-    font-weight: 500;
-font-size: 16px;
-/* color: rgba(0, 0, 0, 0.5); */
+  font-size: 16px;
+  line-height: 2;
 }
 div img{
   width:3rem;
   height:3rem;
   cursor:pointer;
-  /* margin-top:-.3rem */
 }
 .sub_text{
-    /* line-height: 24px; */
-    /* color: rgba(0, 0, 0, 0.5); */
     width:auto;
     display: flex;
     justify-content: flex-end;
     align-items: center;
     font-size:12px;
     color: var(--black);
-    /* background-color:var(--white); */
 }
 .options_flex{
     display:flex;
@@ -389,7 +381,6 @@ div img{
     align-items:center;
 }
 .options_flex button{
-    /* border: 3px solid #000000; */
     border: 3px solid var(--black);
 border-radius: 10px;
 width: 170px;
@@ -405,7 +396,6 @@ font-weight:bold;
 }
 .border_btn:disabled{
   cursor:not-allowed;
-  /* border-color:rgb(185, 183, 183); */
   border-color: var(--orange);
 }
 .category_flex{
@@ -436,7 +426,6 @@ font-weight:bold;
   /* background:#cf6dbb; */
   padding:8px 10px;
   color: #cf6dbb;
-  /* border: 2px solid red; */
   border-radius: 10px;
   width:max-content;
   text-align:right;
