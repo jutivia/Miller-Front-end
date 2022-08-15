@@ -170,10 +170,11 @@ export default {
 </script>
 
 <style scoped>
+
 .hero {
-  background: url("~assets/images/Miller_mainPic.png");
+  background-image: url("~assets/images/Miller_mainPic.png");
   width: 100%;
-  height: 92vh;
+  height: 90vh;
 }
 .right_align {
   padding-top: 7rem;

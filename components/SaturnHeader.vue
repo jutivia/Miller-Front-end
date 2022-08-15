@@ -224,7 +224,10 @@ header {
   padding: 0.813rem 2.313rem 0.75rem 1.563rem;
   background: rgba(255, 255, 255, 0.951);
   box-shadow: inset 0px -1px 0px #e2e2ea;
-  height:5rem;
+  /* border: 1px solid red; */
+  background: var(--navy-blue);
+  color: var(--faint-grey);
+  height: 10vh;
 }
 
 .show-menu {
@@ -236,7 +239,8 @@ header {
   font-weight: 500;
   font-size: 1rem;
   line-height: 1.125rem;
-  color:#cf6dbb;
+  /* color:#cf6dbb; */
+  color: var(--orange);
   margin-left:2rem;
   cursor:pointer;
 }
