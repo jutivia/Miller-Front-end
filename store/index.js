@@ -1,5 +1,6 @@
-// import { ethers } from 'ethers'
-// import Miller from '../utils/miller.json'
+// import web3ModalStore from '~/store/modules/web3Modal'
+// import userStore from '~/store/modules/user'
+import createPersistedState from 'vuex-persistedstate'
 export const state = () => ({
   walletDetails: null,
   connected: null,
@@ -7,12 +8,16 @@ export const state = () => ({
   token: null,
   userId: null,
   userAddress: null,
-  switchState: null
+  switchState: null,
+  web3Modal: null
 })
 
 export const mutations = {
   setToken (state, token) {
     state.token = token
+  },
+  setWeb3Modal (state, instance) {
+    state.web3Modal = instance
   },
   setWalletDetails (state, account) {
     state.walletDetails = account
@@ -34,21 +39,22 @@ export const mutations = {
   }
 }
 export const actions = {
-//   getContract ({ state }) {
-//     try {
-//       const { ethereum } = window
-//       const provider = new ethers.providers.Web3Provider(ethereum)
-//       const signer = provider.getSigner()
-//       const connectedContract = new ethers.Contract(
-//         state.contract_address,
-//         Miller.abi,
-//         signer
-//       )
-//       return connectedContract
-//     } catch (error) {
-//       console.log(error)
-//       console.log('connected contract not found')
-//       return null
-//     }
-//   }
+  //   getContract ({ state }) {
+  //     try {
+  //       const { ethereum } = window
+  //       const provider = new ethers.providers.Web3Provider(ethereum)
+  //       const signer = provider.getSigner()
+  //       const connectedContract = new ethers.Contract(
+  //         state.contract_address,
+  //         Miller.abi,
+  //         signer
+  //       )
+  //       return connectedContract
+  //     } catch (error) {
+  //       console.log(error)
+  //       console.log('connected contract not found')
+  //       return null
+  //     }
+  //   }
 }
+export const plugins = [createPersistedState()]

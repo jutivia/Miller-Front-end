@@ -6,14 +6,14 @@
 
     <div class="upload_container" @click="showOptions = false">
       <div class="main_container">
-        <input id="" v-model="title" type="text" placeholder="Enter Title" class="text">
+        <input id="" v-model="title" type="text" placeholder="Enter title" class="text">
         <br>
         <textarea
           id=""
           v-model="description"
           cols="50"
           rows="10"
-          placeholder="Brief Description"
+          placeholder="Brief description"
           class="text"
         />
         <input
@@ -21,7 +21,7 @@
           id=""
           v-model="amount"
           type="amount"
-          placeholder="Enter Amount In Matic"
+          placeholder="Enter amount in matic"
           class="text"
         >
 
@@ -30,7 +30,7 @@
             id=""
             v-model="item"
             type="text"
-            placeholder="Enter Category"
+            placeholder="Enter category"
             class="category_text"
             @click="showOptions = true"
             @click.stop
@@ -173,7 +173,6 @@ export default {
         this.url = `https://miller.infura-ipfs.io/ipfs/${created.path}`
         if (this.url) { this.selectedFiles.push(doc) }
       } catch (error) {
-        console.log(error.message)
         this.$toasted.error('File upload failed').goAway(5000)
       }
       this.loader1 = false
@@ -204,7 +203,7 @@ export default {
         ) {
           this.$toasted.error('Check your connection.').goAway(5000)
         } else {
-          this.$toasted.error(err?.response?.data?.msg).goAway(5000)
+          this.$toasted.error(err?.response?.data?.msg || 'Connection Failed').goAway(5000)
         }
       }
       this.loader = false

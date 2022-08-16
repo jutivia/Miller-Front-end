@@ -1,15 +1,13 @@
 <template>
-  <header class="header">
-    <div class="logo" @click="$router.push('/')">
-      <img src="~assets/images/MillerLogo.png" alt="">
+  <header>
+    <div class="title" @click="$router.push('/')">
+      <img src="~/assets/images/Miller-logo-2.svg">
     </div>
-    <!-- <h3 class="title" @click="$router.push('/')">
-      Miller
-    </h3> -->
     <!-- Message icon -->
     <div v-if="!showDetails">
       <button class="btn" @click="connect">
-        Connect wallet
+        <span v-if="!loginLoader"> Connect wallet </span>
+        <span v-else style="display:flex;justifyContent:center;alignItems:center;"><Loader /> </span>
       </button>
     </div>
     <div v-else class="upload">
@@ -52,6 +50,7 @@ export default {
       chainId: 8001,
       provider: null,
       chainIsChanged: false,
+      loginLoader: false,
       lastScrollTop: 0
     }
   },
@@ -66,9 +65,6 @@ export default {
       })
       return this.chainId
     }
-    // scrollListener () {
-    //   return this.lastScrollTop
-    // }
   },
   watch: {
     checkConnected () {
@@ -148,28 +144,32 @@ export default {
           }
         }
       }
-
-      const newWeb3Modal = new Web3Modal({
-        disableInjectedProvider: false,
-        displayNoInjectedProvider: false,
-        theme: {
-          background: 'rgb(20,30,30, 0.65)',
-          main: 'rgb(199, 199, 199)',
-          secondary: 'rgb(136, 136, 136)',
-          border: 'rgba(40, 240, 5, 0.05)',
-          hover: 'rgb(16, 45, 35, 0.9)'
-        },
-        network: 'matic',
-        cacheProvider: true, // optional
-        providerOptions // required
-      })
-      const instance = await newWeb3Modal.connect()
-      this.provider = new ethers.providers.Web3Provider(instance)
-      if (this.provider) {
-        this.getAccountdetails()
-        localStorage.setItem('Provider', this.provider)
-      } else {
-        this.$toasted.error('No wallet connection available on your device').goAway(3500)
+      try {
+        const newWeb3Modal = new Web3Modal({
+          disableInjectedProvider: false,
+          displayNoInjectedProvider: false,
+          theme: {
+            background: 'rgb(20,30,30, 0.65)',
+            main: 'rgb(199, 199, 199)',
+            secondary: 'rgb(136, 136, 136)',
+            border: 'rgba(40, 240, 5, 0.05)',
+            hover: 'rgb(16, 45, 35, 0.9)'
+          },
+          network: 'matic',
+          cacheProvider: true, // optional
+          providerOptions // required
+        })
+        const instance = await newWeb3Modal.connect()
+        this.provider = new ethers.providers.Web3Provider(instance)
+        this.$store.commit('setWeb3Modal', newWeb3Modal)
+        if (this.provider) {
+          this.getAccountdetails()
+        } else {
+          this.$toasted.error('No wallet connection available on your device').goAway(3500)
+        }
+      } catch (error) {
+        console.log(error.code, error)
+        this.$toasted.error(error.message).goAway(3500)
       }
 
       this.$store.commit('checkConnected', this.showDetails)
@@ -198,23 +198,26 @@ export default {
     },
     async login () {
       try {
+        this.loginLoader = true
         const token = await this.$axios.post('/api/v1/auth/sign', { address: this.account })
         this.$store.commit('setToken', token?.data?.token)
         this.$store.commit('setUserId', token.data?.UserId)
         this.$store.commit('setUserAddress', this.account)
         this.showDetails = true
       } catch (err) {
+        this.loginLoader = false
+        this.showDetails = false
+        console.log(err)
         if (
           err.message.includes(
             "Cannot read properties of null (reading 'toLowerCase')"
           ) ||
             err.message.includes('Network')
         ) {
-          this.$toasted.error('Check your connection.').goAway(5000)
+          this.$toasted.error('Check your connection').goAway(5000)
         } else {
-          this.$toasted.error('Connection Failed').goAway(5000)
+          this.$toasted.error(err?.response?.data?.message || 'Connection Failed').goAway(5000)
         }
-        this.showDetails = false
       }
     },
     scrollListener () {
@@ -278,7 +281,7 @@ header {
   padding: .75rem 1.5rem;
 }
 .upload{
-  margin-right:2.5rem;
+  margin-right:0rem;
   width:auto;
   min-width:50rem;
   display:flex;

@@ -5,6 +5,7 @@
     </div>
     <div class="table">
       <h1> Dashboard </h1>
+      <br>
       <div v-if="loading" class="overlay-screen" />
       <FullScreenLoader v-if="loading" />
       <SaturnTable
@@ -27,9 +28,9 @@ export default {
         rowPerPage: 10,
         headers: [
           { key: 'title', label: 'Title', type: 'string' },
-          { key: 'description', label: 'Publications', type: 'string' },
-          { key: 'views', label: 'Views', type: 'string' },
-          { key: 'earning', label: 'Earnings', type: 'string' },
+          { key: 'description', label: 'Description', type: 'string' },
+          { key: 'views', label: 'Downloads', type: 'string' },
+          { key: 'type', label: 'Types', type: 'string' },
           { key: 'createdAt', label: 'Date Uploaded', type: 'date/time' }
         ],
         labels: [
@@ -78,7 +79,6 @@ export default {
           this.tableData.labels.map((x) => {
             x.title = this.capitalize(x.title.slice(0, 30)) + `${x.title.length > 20 ? '...' : ''}`
             x.description = this.capitalize(x.description.slice(0, 40)) + `${x.description.length > 20 ? '...' : ''}`
-            x.earning = '0.00 Matic'
             return x
           })
           // console.log(this.tableData.labels)
@@ -92,7 +92,7 @@ export default {
         ) {
           this.$toasted.error('Check your connection.').goAway(5000)
         } else {
-          this.$toasted.error(err?.response?.data?.msg).goAway(5000)
+          this.$toasted.error(err?.response?.data?.msg || 'connection Failed').goAway(5000)
         }
       }
       this.loading = false
