@@ -263,12 +263,12 @@ border-radius: 10px;
 border:none;
 padding:1.5rem;
 font-weight: 500;
-font-size: 24px;
+font-size: 20px;
 margin-bottom: 2rem;
-  color: var(--faint-grey);
+  color: #F4F6FE;
   font-family: var(--jost);
-border: .5px solid var(--light-grey);
-/* box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset; */
+border: .5px solid #f4f6fe5f;
+box-shadow: rgba(204, 219, 232, 0.2) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.015) -3px -3px 6px 1px inset;
 /* color:grey; */
 }
 .text:focus{
@@ -324,9 +324,10 @@ position:relative;
   outline: none;
   transition-duration: 0.3s;
   /* background-color: rgba(87, 87, 87, 0.09); */
-  border: .5px solid var(--light-grey);
+  border: .5px solid #f4f6fe5f;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  box-shadow: rgba(204, 219, 232, 0.119) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.015) -3px -3px 6px 1px inset;
 }
 
 .label-name-2 > input:checked {
@@ -411,21 +412,24 @@ button:disabled{
     background: var(--dark-grey);
   border-radius:10px;
   /* border: 1px solid #07124c33; */
-border: .5px solid var(--light-grey);
+border: .5px solid #f4f6fe5f;
   /* color:#07124c; */
-  color: var(--faint-grey);
+  color: #F4F6FE;
   font-weight:bold;
   max-height:auto;
   display:flex;
   justify-content:space-around;
   align-items:center;
   gap:.7rem;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  box-shadow: rgba(204, 219, 232, 0.2) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.015) -3px -3px 6px 1px inset;
 }
 .selected_categories .x{
   font-size:10px;
   cursor:pointer;
+  border: 1px soild red;
+  border-radius: 50%;
   color:red;
+  padding:5px;
   transition: all 0.25s ease-in-out
 }
 .selected_categories .x:hover{
@@ -448,7 +452,7 @@ border: .5px solid var(--light-grey);
   /* box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset; */
   color: var(--faint-grey);
   font-family: var(--jost);
-font-size: 24px;
+font-size: 20px;
 border: .5px solid var(--light-grey);
 /* border: .5px solid red; */
   font-weight:normal;

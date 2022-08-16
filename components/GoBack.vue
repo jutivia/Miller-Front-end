@@ -47,7 +47,8 @@ button{
   background:transparent;
   display:flex;
   align-items:center;
-  color: #75759e;
+  color: rgb(229, 229, 229);
+   margin-left:2.5rem;
 }
 button:hover{
   color:rgb(165, 165, 165);
@@ -56,13 +57,16 @@ button:hover{
   display: flex;
   align-items: center;
   font-size: 14px;
-  background-color: #75759e41;
+  background-color: rgb(229, 229, 229);
   border: none;
   border-radius:50%;
   height:20px;
   width:20px;
   padding:3px;
 
+}
+button:hover .go-back{
+  background-color:grey;
 }
 
 svg {

@@ -263,7 +263,7 @@ header {
   justify-content: space-between;
   /* padding: 0.813rem 2.313rem 0.75rem 1.563rem; */
   padding:  1rem 4.5rem;
-  background:rgba(5, 1, 55, 0.25);
+  background:rgba(1, 1, 150, 0.032);
   backdrop-filter: blur(2.5rem);
   -webkit-backdrop-filter: blur(2.5rem);
   height: 10vh;
@@ -273,6 +273,7 @@ header {
   right: 0;
   z-index: 50;
   transition: all 0.35s ease-in-out;
+  width:100%;
 }
 
 .show-menu {

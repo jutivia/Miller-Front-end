@@ -13,7 +13,7 @@
           <span class="amount"> {{ data.amount }} Matic </span>
         </h4>
         <br>
-        <p class="small_text">
+        <p class="small_text description">
           {{ data.description? capitalize(data.description) : '-' }}
         </p>
       </div>
@@ -402,28 +402,17 @@ export default {
     grid-template-columns: 1fr 1fr;
     grid-gap:3rem;
 }
-.graph_container{
-margin-top:2rem;
-padding:2rem;
-box-shadow: 0px 8.00725px 15.3472px rgba(62, 73, 84, 0.04);
-border-radius: 6.67271px;
-height: 461.08px;
-width:100%;
-}
-.graph_container p{
-margin-bottom:2rem;
-}
 .big_text{
 font-weight: 600;
-font-size: 24px;
+font-size: 32px;
 line-height: 29px;
-color: #07124C;
+color: var(--orange);
 }
 .small_text{
 font-weight: 500;
 font-size: 18px;
 line-height: 24px;
-color: #575757;
+color: rgb(229, 229, 229);
 }
 .two_grid_right_flex{
    display: flex;
@@ -434,10 +423,10 @@ color: #575757;
 .comments_container{
     margin-top:4rem;
     width:90%;
-    background: #ffffff;
+    background: transparent;
      box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     border-radius: 10px;
-    border: 1px solid #07124c39;
+    border: 1px solid rgba(229, 229, 229, 0.511);
     align-self:center;
     margin-left:2rem;
 }
@@ -447,10 +436,10 @@ color: #575757;
 }
 .comment_header{
 
-background: #ffffffd0;
+background: transparent;
 /* border-bottom: 1px solid #07124c39; */
 border-radius: 10px;
-color:#07124C;
+color:rgb(229, 229, 229);
 font-weight: 600;
 font-size: 20px;
 line-height: 27px;
@@ -461,14 +450,15 @@ align-items:center;
 }
 .single_comment{
     width:auto;
-    border-bottom: 1px solid #07124c21;
-    border-top: 1px solid #07124c21;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    border-bottom: 1px solid rgba(229, 229, 229, 0.192);
+    border-top: 1px solid rgba(229, 229, 229, 0.192);
+    box-shadow: rgba(204, 219, 232, 0.165) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.015) -3px -3px 6px 1px inset;
     padding:1rem 1.8rem;
-    /* border-radius:10px; */
+    border-radius:10px;
     padding-bottom:1.5rem;
     margin:0 1.5rem;
     margin-bottom: 1rem;
+    min-height:7rem;
 }
 .single_comment:nth-last-child(1){
   border-bottom:none;
@@ -484,16 +474,18 @@ align-items:center;
     padding: 0 1.5rem;
 }
 .addComment input {
-box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+box-shadow: rgba(204, 219, 232, 0.094) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.093) -3px -3px 6px 1px inset;
 border:none;
 width:100%;
 height:2rem;
  padding:1.5rem 1rem;
+ background:transparent;
  font-size:1rem;
- color: #515050;
+ color: rgb(219 219 219);
+ border-radius:10px;
 }
 .addComment input::placeholder {
- color: #bdbbbb;
+ color: #d0cfcf89;
 }
 .addComment input:focus{
   outline:none;
@@ -517,17 +509,17 @@ border-radius: 50%;
     font-weight: 500;
 font-size: 16px;
 line-height: 24px;
-color: #515050;
+color: rgb(229, 229, 229);
 }
 .border_btn{
-border: 3px solid #000000;
+border: 3px solid rgb(229, 229, 229);
 border-radius: 10px;
 width: 10rem;
 height: 3rem;
 background:none;
 cursor:pointer;
 padding:.5rem 2rem;
-color:#000000;
+color:rgb(229, 229, 229);
 text-decoration:none;
 margin-top:2rem;
 font-weight:bold;
@@ -542,8 +534,8 @@ justify-content: center;
   align-items: center;
 }
 .delete{
-  border: 3px solid red;
-  color: red;
+  border: 3px solid rgb(189, 0, 0);
+  color: rgb(189, 0, 0);
   /* border-color: red; */
 }
 .download_flex{
@@ -560,21 +552,25 @@ justify-content: center;
   justify-content:space-between;
   align-items:flex-start;
   gap:1rem;
+  margin-left:1.5rem;
+}
+.description{
+  margin-left:1.5rem;
 }
 .amount{
    min-width:max-content;
   padding:8px 10px;
-  background:#3cda7ec1;
+  background:transparent;
   border-radius:10px;
-  border: 1px solid #09d12b33;
-  color:#ffffff;
+  /* border: 1px solid #09d12b33; */
+  color:#3cda7ec1;
   font-weight:bold;
   max-height:auto;
   text-align:center;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-  font-size:14px;
+  font-size:24px;
   line-height:1;
-  margin-right:2rem;
+  /* margin-right:2rem; */
 }
 .text_flex{
   display:flex;
@@ -587,7 +583,7 @@ justify-content: center;
 display:flex;
 justify-content:space-between;
 align-items:center;
-color:rgb(173, 173, 173);
+color:rgba(165, 165, 165, 0.757);
 font-size:12px;
 }
 .commentError{
