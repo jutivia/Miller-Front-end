@@ -114,7 +114,7 @@
                 </label>
               </div>
             </div>
-            <p>Note  please note that you would not get any incentives on free types</p>
+            <p>Please note that you would not get any incentives on free types</p>
             <button class="btn submit" :disabled="!title || !description || !selectedFiles.length || !type || !categories.length" @click="main()">
               <Loader v-if="loader" />
               <span v-else> Submit </span>
@@ -245,10 +245,12 @@ export default {
 
 <style  scoped>
 .upload_container{
-    background: #F4F6FE;
+    background: var(--dark-grey);
     border-radius: 10px;
     margin: 3rem 4.5rem;
     padding:3rem 0;
+      color: var(--faint-grey);
+  font-family: var(--jost);
 }
 .main_container{
 margin:1rem 20%;
@@ -256,21 +258,23 @@ width:60%;
 }
 .text{
 width:100%;
-background: #FFFFFF;
+background: var(--dark-grey);
 border-radius: 10px;
 border:none;
 padding:1.5rem;
 font-weight: 500;
 font-size: 24px;
 margin-bottom: 2rem;
-font-family: 'Montserrat';
-/* border: .5px solid #07124c; */
-box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+  color: var(--faint-grey);
+  font-family: var(--jost);
+border: .5px solid var(--light-grey);
+/* box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset; */
 /* color:grey; */
 }
 .text:focus{
   outline:none;
-  background-color:rgba(255, 255, 255, 0.5);
+  /* background-color:rgba(255, 255, 255, 0.5); */
+  background-color: var(--tinted-black);
 }
 .upload_grid{
     display: grid;
@@ -281,7 +285,8 @@ box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -
     display: flex;
 }
 .file_type_container{
-    background: rgba(214, 221, 246, 0.58);
+    /* background: rgba(214, 221, 246, 0.58); */
+    background: var(--dark-grey);
 border-radius: 5.89041px;
 padding:.5rem;
 width:auto;
@@ -289,14 +294,16 @@ margin-right: 3rem;
 position:relative;
 }
 .lhs p, .rhs p{
-    color: #575757;
+    color: var(--faint-grey);
+  font-family: var(--jost);
     font-weight: 400;
     font-size: 24px;
 }
 .lhs p:nth-last-child(1) {
     font-weight: 400;
     font-size: 16px;
-    color: #000000;
+     color: var(--faint-grey);
+  font-family: var(--jost);
 }
 .label-name-2 {
   display: inline-flex;
@@ -316,13 +323,15 @@ position:relative;
   border-radius: 5px;
   outline: none;
   transition-duration: 0.3s;
-  background-color: rgba(87, 87, 87, 0.09);
+  /* background-color: rgba(87, 87, 87, 0.09); */
+  border: .5px solid var(--light-grey);
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .label-name-2 > input:checked {
-  border: 1px solid  #07124C;;
-  background-color:  #07124C;;
+  /* border: 1px solid  #07124C;; */
+  background-color:  var(--white);
   color: white;
 }
 .label-name-2 span {
@@ -330,7 +339,7 @@ position:relative;
   margin-left: 1.5rem;
   font-weight: 400;
 font-size: 20px;
-color: #575757;
+/* color: #575757; */
 }
 
 .label-name-2 > input:active {
@@ -343,11 +352,12 @@ color: #575757;
     margin-bottom: 1.5rem;
 }
 .submit{
-    width: 258px;
-    height: 56px;
+    /* width: 258px;
+    height: 56px; */
     display:flex;
     justify-content:center;
     align-items:center;
+    background-color: var(--orange);
 
 }
 #file-upload {
@@ -392,15 +402,18 @@ opacity:0;
 }
 button:disabled{
   cursor:not-allowed;
-  background-color:#364489;
+  /* background-color:#364489; */
 }
 .selected_categories, .category_text{
   width:auto;
   padding:10px 10px;
-  background:white;
+  /* background:white; */
+    background: var(--dark-grey);
   border-radius:10px;
-  border: 1px solid #07124c33;
-  color:#07124c;
+  /* border: 1px solid #07124c33; */
+border: .5px solid var(--light-grey);
+  /* color:#07124c; */
+  color: var(--faint-grey);
   font-weight:bold;
   max-height:auto;
   display:flex;
@@ -432,39 +445,45 @@ button:disabled{
   border:none;
   min-width:100%;
   padding-left:1rem;
-  box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
-  font-family: 'Montserrat';
-  font-size: 24px;
+  /* box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset; */
+  color: var(--faint-grey);
+  font-family: var(--jost);
+font-size: 24px;
+border: .5px solid var(--light-grey);
+/* border: .5px solid red; */
   font-weight:normal;
 }
 .category_text:focus{
   outline:none;
+  background: var(--tinted-black);
 }
 .dropDown{
   position:absolute;
   display:flex;
   flex-direction:column;
   background:white;
+  background:hsl(240, 2%, 10%);
   width:inherit;
   padding:.7rem .5rem;
   z-index:10;
-  max-height:10rem;
+  max-height:12.5rem;
   overflow-y:scroll;
   margin-top:.1rem;
-  border: 1px solid #e2e2ea;
-  box-shadow: -1px 10px 15px rgba(117, 117, 158, 0.1);
+  border: .5px solid var(--light-grey);
+  /* box-shadow: -1px 10px 15px rgba(117, 117, 158, 0.1); */
   border-radius: 10px;
   min-height:1rem;
   min-width: auto;
 }
 .option{
-  color: #07124c;
-  font-weight:bold;
+  /* color: #07124c; */
+  color: var(--faint-grey);
+  /* font-weight:bold; */
   padding:.5rem 2rem;
 }
 .option:hover{
-  background-color: #07124c;
-  color: white;
+ color: #07124c;
+    background-color: white;
   border-radius: 10px;
 }
 </style>

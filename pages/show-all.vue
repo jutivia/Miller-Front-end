@@ -1,13 +1,13 @@
-<template>
+<template class="show-all">
   <div>
     <div class="go-back-btn">
       <GoBack back="Home" />
     </div>
     <div class="grid">
       <div class="lhs">
-        <span class="clear" @click="clearFilter()">
+        <button class="clear" @click="clearFilter()">
           Clear Filter
-        </span>
+        </button>
         <br>
         <div class="filter_flex">
           <select v-model="category" placeholder="Filter Category" required class="select_category" @change="showCategory(category)">
@@ -54,9 +54,6 @@
         <br>
         <p
           class="small_text"
-          style="color: #575757;font-weight: 500;
-        font-size: 18px;
-        line-height: 34px;"
         >
           {{ capitalize(item.description.slice(0,100)) }} {{ item.description.length> 20? '...' : '' }}
         </p>
@@ -220,6 +217,10 @@ export default {
 </script>
 
 <style scoped>
+.show-all{
+   color: var(--faint-grey);
+  font-family: var(--jost);
+}
 .lhs{
     max-width:90%;
 }
@@ -229,7 +230,8 @@ export default {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 2rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    /* border-bottom: 1px solid rgba(0, 0, 0, 0.2); */
+    border-bottom: 0.1px solid var(--grey);
 }
 .filter_flex{
     width: 5rem;
@@ -245,32 +247,61 @@ export default {
 .select_category{
     width: auto;;
 height: 3rem;
-background: #F4F6FE;
+/* background: #F4F6FE; */
+background: var(--dark-grey);
+border: 2px solid yellow
 }
 .filter_flex select{
   margin-top:2.2rem;
-    border: 1px solid #0000003b;
+    /* border: 1px solid #0000003b; */
+    border: 1px solid   var(--black);
+    background: var(--white);
+    color: var(--black);
     border-radius: 10px;
     padding: .5rem 1rem;
     min-width:300px;
     width:100%;
 }
   select:focus {
-  outline: 1px solid #07124C;
+  /* outline: 1px solid #07124C; */
+  outline: 1px solid var(--orange);
 }
 .clear{
-  cursor:pointer
+  cursor:pointer;
+   color: var(--white);
+  font-weight: 700;
+  width: max-content;
+  padding: 5px;
+  line-height: 2;
+  background: transparent;
+  border: none;
 }
+ .clear::after {
+    content: "";
+    display: block;
+    width: 0;
+    margin-inline: auto;
+    height: 3px;
+    background-color: var(--orange);
+    transition: 0.35s ease-out;
+  }
+
+  .clear:hover::after {
+    width: 100%;
+  }
 .category_flex div{
     margin-top:-1.2rem;
 }
 .category_flex select option {
-    color: rgba(0, 0, 0, 0.5);;
+    /* color: rgba(0, 0, 0, 0.5); */
+    /* color: rgba(0, 0, 0, 0.5); */
+    color: var(--black);
 }
 .Big_text{
     font-weight: 500;
 font-size: 20px;
-color: #000000;
+/* color: #000000; */
+color: var(--orange);
 }
 .clickable{
   cursor: pointer;
@@ -289,25 +320,21 @@ color: #000000;
     margin-bottom:1rem;
 }
 .small_text{
-    font-weight: 500;
-font-size: 16px;
-color: rgba(0, 0, 0, 0.5);
+  font-size: 16px;
+  line-height: 2;
 }
 div img{
   width:3rem;
   height:3rem;
   cursor:pointer;
-  /* margin-top:-.3rem */
 }
 .sub_text{
-    /* line-height: 24px; */
-    color: rgba(0, 0, 0, 0.5);
     width:auto;
     display: flex;
     justify-content: flex-end;
     align-items: center;
     font-size:12px;
-    background-color:white;
+    color: var(--black);
 }
 .options_flex{
     display:flex;
@@ -317,7 +344,7 @@ div img{
     align-items:center;
 }
 .options_flex button{
-    border: 3px solid #000000;
+    border: 3px solid var(--black);
 border-radius: 10px;
 width: 170px;
 height: 2.5rem;
@@ -332,7 +359,7 @@ font-weight:bold;
 }
 .border_btn:disabled{
   cursor:not-allowed;
-  border-color:rgb(185, 183, 183)
+  border-color: var(--orange);
 }
 .category_flex{
   display:flex;
@@ -353,14 +380,15 @@ font-weight:bold;
 }
 .pink_button{
   color: #cf6dbb;
-  padding:10px 20px;
-  border: 3px dotted #cf6dbb;
+  padding:0.75rem 1.5rem;
+  border: 1px solid #cf6dbb;
   border-radius: 10px;
 }
 .date{
-   background-color: #455eda;
+   /* background-color: #455eda; */
+  /* background:#cf6dbb; */
   padding:8px 10px;
-  color:white;
+  color: #cf6dbb;
   border-radius: 10px;
   width:max-content;
   text-align:right;

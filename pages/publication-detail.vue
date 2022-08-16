@@ -58,61 +58,27 @@
         </div>
         <div class="comments_container">
           <div class="comment_header">
-            <span> Comments (0) </span>
-            <button class="btn save_comment ">
-              Add comment
+            <span> Comments ({{ comments.length }}) </span>
+            <button class="btn save_comment " @click="addComment()">
+              <span v-if="!loader2"> Add comment </span>
+              <span v-else> <Loader /></span>
             </button>
           </div>
           <div class="comment_body">
             <div class="addComment">
-              <input id="comment" type="text" name="comment" placeholder="Add a comment...">
+              <input id="comment" v-model="comment" type="text" name="comment" placeholder="Add a comment...">
+              <br>
+              <span v-if="commentError" class="commentError"> Kindly enter a comment</span>
             </div>
             <br>
-            <div class="comments">
-              <div class="single_comment">
+            <div v-if="comments.length" class="comments">
+              <div v-for="item,index in comments" :key="index" class="single_comment">
                 <div class="commenter">
-                  <span> 0x0...00</span>
-                  <span> 2 months ago</span>
+                  <span> {{ cutAddr(item.commenter) || '-' }}</span>
+                  <span> {{ item.createdAt || '-' }}</span>
                 </div>
                 <div class="comment_text">
-                  We are also focused on supporting members of the DAO
-                  We are also focused on supporting members of the DAO
-                  We are also focused on supporting members of the DAO
-                </div>
-                <!-- <div class="reply">
-                  <svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17.9688 10.9375L16.8641 12.0422L18.8805 14.0625H12.5C11.6712 14.0625 10.8763 14.3917 10.2903 14.9778C9.70424 15.5638 9.375 16.3587 9.375 17.1875C9.375 18.0163 9.70424 18.8112 10.2903 19.3972C10.8763 19.9833 11.6712 20.3125 12.5 20.3125H14.0625V18.75H12.5C12.0856 18.75 11.6882 18.5854 11.3951 18.2924C11.1021 17.9993 10.9375 17.6019 10.9375 17.1875C10.9375 16.7731 11.1021 16.3757 11.3951 16.0826C11.6882 15.7896 12.0856 15.625 12.5 15.625H18.8805L16.8625 17.6461L17.9688 18.75L21.875 14.8438L17.9688 10.9375Z" fill="black" fill-opacity="0.4" />
-                    <path d="M6.25 14.0625H1.5625L1.56016 2.27031L10.493 8.45469C10.6236 8.54507 10.7787 8.59349 10.9375 8.59349C11.0963 8.59349 11.2514 8.54507 11.382 8.45469L20.3125 2.27344V9.375H21.875V1.5625C21.8746 1.14823 21.7098 0.751039 21.4169 0.458103C21.124 0.165167 20.7268 0.000413654 20.3125 0H1.5625C1.1485 -4.65744e-07 0.751432 0.164298 0.458474 0.456817C0.165515 0.749336 0.000620993 1.14616 0 1.56016V14.0625C0.000619922 14.4767 0.165439 14.8738 0.45833 15.1667C0.751222 15.4596 1.14829 15.6244 1.5625 15.625H6.25V14.0625ZM18.593 1.5625L10.9375 6.8625L3.28203 1.5625H18.593Z" fill="black" fill-opacity="0.4" />
-                  </svg>
-
-                  Reply
-                </div> -->
-              </div>
-              <div class="single_comment">
-                <div class="commenter">
-                  <span> 0x0...00</span>
-                  <span> 2 months ago</span>
-                </div>
-
-                <div class="comment_text">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
-                </div>
-                <!-- <div class="reply">
-                  <svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17.9688 10.9375L16.8641 12.0422L18.8805 14.0625H12.5C11.6712 14.0625 10.8763 14.3917 10.2903 14.9778C9.70424 15.5638 9.375 16.3587 9.375 17.1875C9.375 18.0163 9.70424 18.8112 10.2903 19.3972C10.8763 19.9833 11.6712 20.3125 12.5 20.3125H14.0625V18.75H12.5C12.0856 18.75 11.6882 18.5854 11.3951 18.2924C11.1021 17.9993 10.9375 17.6019 10.9375 17.1875C10.9375 16.7731 11.1021 16.3757 11.3951 16.0826C11.6882 15.7896 12.0856 15.625 12.5 15.625H18.8805L16.8625 17.6461L17.9688 18.75L21.875 14.8438L17.9688 10.9375Z" fill="black" fill-opacity="0.4" />
-                    <path d="M6.25 14.0625H1.5625L1.56016 2.27031L10.493 8.45469C10.6236 8.54507 10.7787 8.59349 10.9375 8.59349C11.0963 8.59349 11.2514 8.54507 11.382 8.45469L20.3125 2.27344V9.375H21.875V1.5625C21.8746 1.14823 21.7098 0.751039 21.4169 0.458103C21.124 0.165167 20.7268 0.000413654 20.3125 0H1.5625C1.1485 -4.65744e-07 0.751432 0.164298 0.458474 0.456817C0.165515 0.749336 0.000620993 1.14616 0 1.56016V14.0625C0.000619922 14.4767 0.165439 14.8738 0.45833 15.1667C0.751222 15.4596 1.14829 15.6244 1.5625 15.625H6.25V14.0625ZM18.593 1.5625L10.9375 6.8625L3.28203 1.5625H18.593Z" fill="black" fill-opacity="0.4" />
-                  </svg>
-
-                  Reply
-                </div> -->
-              </div>
-              <div class="single_comment">
-                <div class="commenter">
-                  <span> 0x0...00</span>
-                  <span> 2 months ago</span>
-                </div>
-                <div class="comment_text">
-                  We are also focused on supporting members of the DAO
+                  {{ item.content || '-' }}
                 </div>
                 <!-- <div class="reply">
                   <svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -215,11 +181,15 @@ export default {
       },
       loader1: false,
       loading: false,
+      loader2: false,
       deletePublication: false,
       downloadPublication: false,
       downloadLoder: false,
       backBtn: 'All Publications',
-      provider: ''
+      provider: '',
+      comment: '',
+      comments: [],
+      commentError: false
     }
   },
   created () {
@@ -294,6 +264,8 @@ export default {
       try {
         const data = await this.$axios.get(`/api/v1/publications/${this.$route.query.id}`)
         this.data = data.data.publication
+        console.log(data.data.publication)
+        this.comments = data.data.publication.comments.reverse() || []
       } catch (err) {
         if (
           err.message.includes(
@@ -372,6 +344,52 @@ export default {
         }
       }
       this.downloadLoder = false
+    },
+    cutAddr (addr) {
+      const starter = addr.slice(0, 4)
+      const end = addr.slice(addr.length - 4)
+      return `${starter}...${end}`
+    },
+    async addComment () {
+      this.loader2 = true
+      if (!this.comment) {
+        this.loader2 = false
+        this.commentError = true
+        return setTimeout(() => {
+          this.commentError = false
+        }, 5000)
+      }
+      const today = new Date()
+      const dd = today.getDate()
+
+      const mm = today.getMonth() + 1
+      const yyyy = today.getFullYear()
+      const newDate = `${dd}/${mm}/${yyyy}`
+      const data = {
+        comment: {
+          content: this.comment,
+          createdAt: newDate,
+          commenter: this.$store.state.userAddress
+        }
+      }
+      try {
+        const comments = await this.$axios.post(`/api/v1/publications/comment/${this.$route.query.id}`, data)
+        console.log(comments)
+        this.comments = comments.data.updatedCount.comments
+        this.comment = ''
+      } catch (err) {
+        if (
+          err.message.includes(
+            "Cannot read properties of null (reading 'toLowerCase')"
+          ) ||
+            err.message.includes('Network')
+        ) {
+          this.$toasted.error('Check your connection.').goAway(5000)
+        } else {
+          this.$toasted.error(err?.response?.data?.msg || 'Connection Failed').goAway(5000)
+        }
+      }
+      this.loader2 = false
     }
   }
 }
@@ -424,7 +442,7 @@ color: #575757;
     margin-left:2rem;
 }
 .comments{
-  max-height: 20rem;
+  max-height: 15rem;
   overflow-y:scroll;
 }
 .comment_header{
@@ -442,12 +460,15 @@ justify-content:space-between;
 align-items:center;
 }
 .single_comment{
-    width:100%;
-    border-bottom: 2px solid #07124c21;
+    width:auto;
+    border-bottom: 1px solid #07124c21;
+    border-top: 1px solid #07124c21;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     padding:1rem 1.8rem;
     /* border-radius:10px; */
     padding-bottom:1.5rem;
+    margin:0 1.5rem;
+    margin-bottom: 1rem;
 }
 .single_comment:nth-last-child(1){
   border-bottom:none;
@@ -460,9 +481,6 @@ align-items:center;
   width:100%;
   border-radius: 10px;
   line-height: 27px;
-display: flex;
-    justify-content:space-between;
-    align-items:center;
     padding: 0 1.5rem;
 }
 .addComment input {
@@ -472,6 +490,10 @@ width:100%;
 height:2rem;
  padding:1.5rem 1rem;
  font-size:1rem;
+ color: #515050;
+}
+.addComment input::placeholder {
+ color: #bdbbbb;
 }
 .addComment input:focus{
   outline:none;
@@ -567,5 +589,12 @@ justify-content:space-between;
 align-items:center;
 color:rgb(173, 173, 173);
 font-size:12px;
+}
+.commentError{
+  display:block;
+  color:rgb(157, 10, 10);
+  margin-top:.5rem;
+  font-size:12px;
+  /* margin-left:.5rem; */
 }
 </style>

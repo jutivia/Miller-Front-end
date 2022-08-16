@@ -1,5 +1,5 @@
-<template>
-  <div class="">
+<template class="creator-dashboard">
+  <div>
     <div class="go-back-btn">
       <GoBack back="All Publications" path="/show-all" />
     </div>
@@ -108,12 +108,22 @@ export default {
 </script>
 
 <style scoped>
+.creator-dashboard{
+  position: relative;
+  min-height: 100vh;
+  margin: 0;
+}
 .table{
-    padding: 3rem 2.5rem;
+    padding: 3rem 4.5rem;
     max-width:100%;
     margin:0 auto;
+    /* border: 2px solid red; */
+    height: 100%;
 }
 h1{
-  color: #cf6dbb;
+  color: var(--orange);
+  font-weight: 500;
+  font-size: 36px;
+  margin-bottom: 1rem;
 }
 </style>
