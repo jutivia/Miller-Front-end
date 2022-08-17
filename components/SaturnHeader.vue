@@ -1,11 +1,8 @@
 <template>
-  <header class="header">
-    <div class="logo" @click="$router.push('/')">
-      <img src="~assets/images/MillerLogo.png" alt="">
+  <header>
+    <div class="title" @click="$router.push('/')">
+      <img src="~/assets/images/Miller-logo-2.svg">
     </div>
-    <!-- <h3 class="title" @click="$router.push('/')">
-      Miller
-    </h3> -->
     <!-- Message icon -->
     <div v-if="!showDetails">
       <button class="btn" @click="connect">
@@ -68,9 +65,6 @@ export default {
       })
       return this.chainId
     }
-    // scrollListener () {
-    //   return this.lastScrollTop
-    // }
   },
   watch: {
     checkConnected () {
@@ -97,8 +91,8 @@ export default {
     }
   },
   created () {
-    // if (localStorage.getItem('setProvider') === 'true') { this.showDetails = true } else { this.showDetails = false }
     this.showDetails = false
+    // this.loadLocalData()
   },
   mounted () {
     window.addEventListener('scroll', this.scrollListener)
@@ -209,11 +203,6 @@ export default {
         this.$store.commit('setToken', token?.data?.token)
         this.$store.commit('setUserId', token.data?.UserId)
         this.$store.commit('setUserAddress', this.account)
-        // localStorage.setItem('setUserDetails', {
-        //   token: token?.data?.token,
-        //   userId: token.data?.UserId,
-        //   userAddress: this.account
-        // })
         this.showDetails = true
       } catch (err) {
         this.loginLoader = false
