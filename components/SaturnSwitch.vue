@@ -79,10 +79,9 @@ export default {
   min-width: 300px;
   height: 50px;
   border-radius: 10px;
-  background: transparent;
-  border: 1px solid #0000003b;
+  border: 1px solid #ffffff3b;
   transition: 0.3s;
-  background:  #F4F6FE;
+  background:  #ffffffcc;
 }
 button {
   border: 0;
@@ -93,27 +92,31 @@ button {
   font-size: 12px;
 }
 .switch-button.inactive button:nth-child(1)  {
-  background: #07124C;
+  background: var(--black);;
   color:   #F4F6FE;
   border-radius: 10px;
+  font-weight:800;
 }
 .switch-button.inactive button:nth-child(2)  {
   background: transparent;
-  color: #07124C;
+  color: rgb(136, 136, 136);
   border-radius:  10px;
+  font-weight:800;
 }
 .switch-button.active button:nth-child(1)  {
   background: transparent;
-  color: #07124C;
+  color: rgb(136, 136, 136);
+  font-weight:800;
   border-radius:10px ;
 }
 .switch-button.active button:nth-child(2)  {
-  background: #07124C;
+  background: var(--black);;
   color:  #F4F6FE;
   border-radius: 10px;
+  font-weight:800;
 }
 button.active  {
-  background: #07124C;
+  background: var(--black);;
   color: #F4F6FE;
 }
 

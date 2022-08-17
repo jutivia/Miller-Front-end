@@ -460,7 +460,7 @@ button .count {
 }
 .saturn-table-ctn {
   /* border: 1px solid #E2E2EA; */
-  border-radius: 5px;
+  border-radius: 10px;
   padding: 0;
   width:auto;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
@@ -469,14 +469,17 @@ button .count {
   margin: 0 0;
   border-spacing: 0px;
   overflow-x: scroll;
-  background: rgba(255, 255, 255, 0.727);
+  background: rgba(255, 255, 255, 0.034);
+  border: 1px solid rgba(255, 255, 255, 0.024);
+  border-radius:10px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 .space {
   padding: 0 8px;
 }
 .saturn-table-wrapper {
   overflow-x: scroll;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 .full-width {
   width: 100%;
@@ -489,14 +492,15 @@ button .count {
 }
 .table-row:nth-of-type(odd) {
   text-align: left;
-  background: #ffffff;
+  /* background: #ffffff; */
   font-size: 16px;
   line-height: 18px;
   border-radius: 10px;
+  color:white;
 }
 .table-row:nth-of-type(even) {
   text-align: left;
-  background: #e7e7e9;
+  background: #ffffffcc;
   font-size: 16px;
   line-height: 18px;
   border-radius: 10px;
@@ -505,7 +509,7 @@ th {
   padding: 24px 14px;
   white-space: nowrap;
   cursor: pointer;
-  color: #07124C;
+  color: #ffffff;
   font-weight: 600;
   font-size: 24px;
   line-height: 29px;
@@ -519,8 +523,11 @@ th.no-filter .filter-icon {
 }
 td {
   padding: 18px 14px;
-  color: #575757;
+  color: #464545;
   /* white-space: nowrap; */
+}
+.table-row:nth-of-type(odd) td{
+  color:rgb(229, 229, 229);
 }
 /* .table-row td:nth-child(2), .header-row th:nth-child(2){
   width:auto;

@@ -480,14 +480,14 @@ footer{
   text-align:left;
 }
 .option{
-  color: #07124c;
+  color: var(--black);
   background-color:rgba(187, 187, 187, 0.282);
   padding:1rem 2rem;
   margin-bottom:.8rem;
   border-radius: 10px;
 }
 .option:hover{
-  background-color: #172a89;
+  background-color: var(--black);
   color: white;
 }
 .option .big_text{

@@ -255,7 +255,7 @@ border: 2px solid yellow
   margin-top:2.2rem;
     /* border: 1px solid #0000003b; */
     border: 1px solid   var(--black);
-    background: var(--white);
+    background:#ffffffcc;;
     color: var(--black);
     border-radius: 10px;
     padding: .5rem 1rem;
@@ -299,7 +299,7 @@ border: 2px solid yellow
 }
 .Big_text{
     font-weight: 500;
-font-size: 20px;
+font-size: 30px;
 /* color: #000000; */
 color: var(--orange);
 }
@@ -322,6 +322,7 @@ color: var(--orange);
 .small_text{
   font-size: 16px;
   line-height: 2;
+  color:rgb(229, 229, 229);
 }
 div img{
   width:3rem;
@@ -380,7 +381,7 @@ font-weight:bold;
 }
 .pink_button{
   color: #cf6dbb;
-  padding:0.75rem 1.5rem;
+  padding:0rem 1.5rem;
   border: 1px solid #cf6dbb;
   border-radius: 10px;
 }
@@ -397,16 +398,17 @@ font-weight:bold;
 .green{
    min-width:max-content;
   padding:8px 10px;
-  background:#3cda7ec1;
+  /* background:#3cda7ec1; */
   border-radius:10px;
-  border: 1px solid #09d12b33;
+  /* border: 1px solid #09d12b33; */
   color:#ffffff;
   font-weight:bold;
   max-height:auto;
   text-align:center;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-  font-size:14px;
+  font-size:18px;
   line-height:1;
+  color:#3cda7ec1
   /* margin-right:2rem; */
 }
 .download_flex{
